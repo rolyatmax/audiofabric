@@ -1,2 +1,2 @@
 # happy-winter
-intended to be a visualization of some of bon ivers music
+intended to be a visualization of some of bon iver's music
