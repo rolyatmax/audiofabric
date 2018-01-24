@@ -1,8 +1,11 @@
 const glsl = require('glslify')
 const { createSpring } = require('spring-animator')
 
+let linesOffsetsLoopToken
+let lines = []
+
 module.exports = function createRenderGrid (regl, settings) {
-  const lines = []
+  lines = []
 
   for (let j = 1; j < settings.gridLines; j++) {
     lines.push({
@@ -92,7 +95,8 @@ module.exports = function createRenderGrid (regl, settings) {
     primitive: 'lines'
   })
 
-  setLinesOffsetsLoop()
+  clearTimeout(linesOffsetsLoopToken)
+  linesOffsetsLoopToken = setTimeout(setLinesOffsetsLoop, 15000)
 
   let calls = 0
   function setLinesOffsets () {
@@ -120,13 +124,12 @@ module.exports = function createRenderGrid (regl, settings) {
     })
   }
 
-  let linesOffsetsLoopToken
   function setLinesOffsetsLoop () {
     setTimeout(() => {
       clearTimeout(linesOffsetsLoopToken)
       setLinesOffsets()
       linesOffsetsLoopToken = setLinesOffsetsLoop()
-    }, 8800)
+    }, 9500)
   }
 
   return function ({ frequencyVals, gridMaxHeight, multiplier }) {

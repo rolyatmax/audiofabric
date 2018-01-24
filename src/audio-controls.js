@@ -15,7 +15,10 @@ module.exports = function createAudioControls (audio, tracks) {
 
   tracks.map((track, i) => {
     const trackEl = trackSelector.appendChild(document.createElement('li'))
-    trackEl.addEventListener('click', () => setTrack(tracks[i]))
+    trackEl.addEventListener('click', () => {
+      setTrack(tracks[i])
+      audio.play()
+    })
     trackEl.innerText = '0' + (1 + i) + '. ' + track.title
     css(trackEl, { margin: `10px 0 10px ${padding}px`, position: 'relative' })
     track.el = trackEl
@@ -28,11 +31,10 @@ module.exports = function createAudioControls (audio, tracks) {
     tracks.forEach(t => css(t.el, 'color', '#888'))
     css(track.el, 'color', '#eee')
     // titleEl.innerText = track.title
-    audio.play()
   }
 
   setTrack(tracks[0])
-  audio.play()
+  // audio.play()
   const paddingTop = 0
   css(controlsContainer, { width, paddingTop: paddingTop, position: 'relative', backgroundColor: 'rgba(60, 60, 60, 0.65)', border: '1px solid rgb(80, 80, 80)' })
   css(trackSelector, { margin: '20px 0', position: 'relative', zIndex: 10, fontFamily: 'monospace', cursor: 'pointer', fontSize: 13, color: '#888', listStyle: 'none', padding: 0 })

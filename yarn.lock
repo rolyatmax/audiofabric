@@ -3131,6 +3131,10 @@ simplex-noise@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/simplex-noise/-/simplex-noise-2.3.0.tgz#317e0db8f10ef34d058c6619e7b67657de131d26"
 
+sketch-js@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/sketch-js/-/sketch-js-1.1.3.tgz#ca692351315f417b25be9fa826866f56827ad85e"
+
 slice-ansi@0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/slice-ansi/-/slice-ansi-0.0.4.tgz#edbf8903f66f7ce2f8eafd6ceed65e264c831b35"
