@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <title>audiofabric</title>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:600" rel="stylesheet">
+  <meta charset="utf-8">
+  <!-- <meta name="description" content="A 3D music visualization.">
+  <meta name="news_keywords" content="music, music visualization, webgl, 3d, data viz, data, data vis">
+
+  <meta property="og:title" content="audiofabric">
+  <meta property="og:site_name" content="tbaldw.in">
+  <meta property="og:url" content="https://tbaldw.in/audiofabric">
+  <meta property="og:description" content="A 3D music visualization.">
+  <meta property="og:type" content="article">
+
+  <meta property="og:image" content="https://tbaldw.in/audiofabric/images/audiofabric.png">
+  <meta property="og:image:type" content="image/png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="https://tbaldw.in">
+  <meta name="twitter:creator" content="@taylorbaldwin">
+  <meta name="twitter:title" content="audiofabric">
+  <meta name="twitter:description" content="A 3D music visualization.">
+  <meta name="twitter:image:src" content="https://tbaldw.in/audiofabric/images/audiofabric.png"> -->
+  <style>
+    html, body {
+      color: #e2e2e2;
+      background-color: #2f2f2f;
+      font-family: 'Open Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      margin: 0;
+      padding: 0;
+    }
+    .title-card-container {
+      position: absolute;
+      height: 100vh;
+      width: 100vw;
+      top: 0;
+      left: 0;
+      z-index: 8;
+    }
+    .instructions {
+      opacity: 0;
+      transition: opacity 1000ms linear;
+      color: rgb(230, 230, 230);
+      position: absolute;
+      top: 47%;
+      text-align: center;
+      width: 100vw;
+      font-size: 18px;
+      letter-spacing: 8px;
+    }
+    .instructions button {
+      margin-top: 50px;
+      color: rgb(230, 230, 230);
+      padding: 25px 50px;
+      transition: background-color 150ms linear;
+      background-color: rgba(60, 60, 60, 0.95);
+      border: 1px solid rgb(70, 70, 70);
+      cursor: pointer;
+      font-size: 14px;
+      letter-spacing: 3px;
+      outline: 0;
+      font-family: inherit;
+    }
+    .instructions button:hover {
+      background-color: rgba(70, 70, 70, 1);
+    }
+    .controls-container {
+      opacity: 0;
+      margin: 10px;
+      width: 290px;
+      padding-top: 30px;
+      position: relative;
+      background-color: rgba(60, 60, 60, 0.65);
+      border: 1px solid rgb(80, 80, 80);
+      z-index: 9;
+    }
+    .controls-header {
+      padding: 20px 25px;
+      font-weight: 200;
+      font-size: 18px;
+      color: #eee;
+      position: relative;
+    }
+    .github-link {
+      position: absolute;
+      fill: #888;
+      top: -15px;
+      right: 20px;
+      transition: fill 200ms linear;
+    }
+    .github-link:hover {
+      fill: #eee;
+    }
+    .artist {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #aaa;
+    }
+    .elapsed-time {
+      position: absolute;
+      bottom: 20px;
+      right: 25px;
+      font-weight: 200;
+      font-size: 13px;
+      color: #eee;
+    }
+    .seeker {
+      height: 5px;
+      width: 100%;
+      background-color: rgba(90, 90, 90, 0.5);
+      cursor: pointer;
+      position: relative;
+    }
+    .progress {
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: -1px;
+      background-color: #eee;
+    }
+    .track-selector {
+      margin: 0 0 20px 0;
+      position: relative;
+      z-index: 10;
+      cursor: pointer;
+      list-style: none;
+      padding: 0;
+    }
+    .track {
+      margin: 10px 0 10px 25px;
+      position: relative;
+      font-size: 13px;
+      transition: color 200ms linear;
+      color: #888;
+    }
+    .track span {
+      margin-right: 15px;
+    }
+    .track:hover {
+      color: #bbb;
+    }
+    .track.selected {
+      color: #eee;
+    }
+  </style>
+</head>
+<body>
+  <canvas class="viz"></canvas>
+  <div class="title-card-container">
+    <canvas></canvas>
+    <div class="instructions">
+      <div>TURN YOUR SOUND ON</div>
+      <button>READY</button>
+    </div>
+  </div>
+  <div class="controls-container">
+    <div class="controls-header">
+      <a href="https://github.com/rolyatmax" class="github-link">
+        <svg width="22px" height="22px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M15,0.0576923077 C6.72580645,0.0576923077 0.00806451613,6.91483516 0.00806451613,15.3791209 C0.00806451613,22.1456044 4.30645161,27.8901099 10.2580645,29.9175824 C11.0080645,30.0576923 11.25,29.5879121 11.25,29.1840659 L11.25,26.3241758 C7.08064516,27.2554945 6.20967742,24.5192308 6.20967742,24.5192308 C5.53225806,22.7472527 4.5483871,22.2774725 4.5483871,22.2774725 C3.18548387,21.3296703 4.65322581,21.3461538 4.65322581,21.3461538 C6.16129032,21.4532967 6.9516129,22.9285714 6.9516129,22.9285714 C8.29032258,25.2692308 10.4596774,24.5934066 11.3145161,24.1978022 C11.4516129,23.2087912 11.8387097,22.532967 12.266129,22.1456044 C8.93548387,21.7582418 5.43548387,20.4478022 5.43548387,14.5714286 C5.43548387,12.8983516 6.02419355,11.5302198 6.98387097,10.4587912 C6.83064516,10.0714286 6.31451613,8.51373626 7.12903226,6.40384615 C7.12903226,6.40384615 8.38709677,5.99175824 11.25,7.97802198 C12.4435484,7.64010989 13.7258065,7.46703297 15,7.45879121 C16.2741935,7.46703297 17.5564516,7.63186813 18.7580645,7.97802198 C21.6209677,6 22.8790323,6.40384615 22.8790323,6.40384615 C23.6935484,8.51373626 23.1854839,10.0714286 23.0241935,10.4587912 C23.983871,11.5302198 24.5645161,12.8983516 24.5645161,14.5714286 C24.5645161,20.456044 21.0564516,21.75 17.7177419,22.1291209 C18.2580645,22.6071429 18.75,23.5384615 18.75,24.9642857 L18.75,29.1675824 C18.75,29.5714286 18.9919355,30.0494505 19.75,29.9010989 C25.7016129,27.8736264 29.9919355,22.1291209 29.9919355,15.3626374 C29.9919355,6.91483516 23.2741935,0.0576923077 15,0.0576923077 L15,0.0576923077 Z">
+        </path></svg>
+      </a>
+      <div class="title"></div>
+      <div class="artist"></div>
+      <div class="elapsed-time"></div>
+    </div>
+    <div class="seeker">
+      <div class="progress"></div>
+    </div>
+    <ul class="track-selector"></ul>
+  </div>
+  <script src="bundle.js"></script>
+  <!-- <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-36884625-1', 'auto');
+    ga('send', 'pageview');
+  </script> -->
+</body>
+</html>

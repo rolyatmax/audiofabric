@@ -17,10 +17,8 @@ const createRenderBloom = require('./render-bloom')
 const createRenderBlur = require('./render-blur')
 const createRenderGrid = require('./render-grid')
 
-document.body.style.backgroundColor = '#2f2f2f'
-
 const titleCard = createTitleCard()
-const canvas = document.body.appendChild(document.createElement('canvas'))
+const canvas = document.querySelector('canvas.viz')
 const resize = fit(canvas)
 window.addEventListener('resize', () => { resize(); setup() }, false)
 const camera = createCamera(canvas)
@@ -56,16 +54,15 @@ const renderBloom = createRenderBloom(regl, canvas)
 const renderBlur = createRenderBlur(regl)
 
 const tracks = [
-  {title: 'Another New World', path: 'src/audio/01-Another_New_World.mp3'},
-  {title: '715 - CRΣΣKS', path: 'src/audio/03-715-Creeks.mp3'},
-  {title: 'The Wilder Sun', path: 'src/audio/01-The_Wilder_Sun.mp3'},
-  {title: 'Lost It To Trying', path: 'src/audio/02-Lost_It_To_Trying.mp3'},
-  {title: 'Adagio for Strings', path: 'src/audio/08-Adagio_for_Strings.mp3'}
+  {title: 'Another New World', artist: 'Punch Brothers', path: 'src/audio/01-Another_New_World.mp3'},
+  {title: '715 - CRΣΣKS', artist: 'Bon Iver', path: 'src/audio/03-715-Creeks.mp3'},
+  {title: 'The Wilder Sun', artist: 'Jon Hopkins', path: 'src/audio/01-The_Wilder_Sun.mp3'},
+  {title: 'Lost It To Trying', artist: 'Son Lux', path: 'src/audio/02-Lost_It_To_Trying.mp3'},
+  {title: 'Adagio for Strings', artist: 'Samuel Barber', path: 'src/audio/08-Adagio_for_Strings.mp3'}
 ]
 setupAudio(tracks).then(([audioAnalyser, audio]) => {
   const audioControls = createAudioControls(audio, tracks)
-  document.body.appendChild(audioControls.el)
-  window.requestAnimationFrame(loop)
+
   function loop () {
     window.requestAnimationFrame(loop)
     audioControls.tick()
@@ -76,18 +73,28 @@ setupAudio(tracks).then(([audioAnalyser, audio]) => {
   analyser.analyser.minDecibels = -75
   analyser.analyser.maxDecibels = -30
   analyser.analyser.smoothingTimeConstant = 0.5
-  setup()
-  start()
-  titleCard.show()
-  setTimeout(audio.play.bind(audio), 3000)
-  setTimeout(titleCard.remove.bind(titleCard), 8000)
+
+  titleCard.show().then(() => {
+    css(audioControls.el, {
+      transition: 'opacity 1s linear',
+      opacity: 1
+    })
+    css(gui.domElement.parentElement, {
+      transition: 'opacity 1s linear',
+      opacity: 1
+    })
+    window.requestAnimationFrame(loop)
+    audio.play()
+    setup()
+    startLoop()
+  })
 })
 
 const settings = {
   seed: 0,
 
   points: 2500,
-  dampening: 0.39,
+  dampening: 0.7,
   stiffness: 0.55,
   freqPow: 1.7,
   connectedNeighbors: 4,
@@ -110,7 +117,10 @@ const settings = {
 
 const gui = new GUI()
 gui.closed = true
-css(gui.domElement.parentElement, { zIndex: 11 })
+css(gui.domElement.parentElement, {
+  zIndex: 11,
+  opacity: 0
+})
 const fabricGUI = gui.addFolder('fabric')
 fabricGUI.add(settings, 'dampening', 0.01, 1).step(0.01).onChange(setup)
 fabricGUI.add(settings, 'stiffness', 0.01, 1).step(0.01).onChange(setup)
@@ -162,7 +172,7 @@ function setup () {
       position: position,
       id: id,
       neighbors: new Set(), // gonna fill this up with the results of delaunay
-      spring: createSpring(settings.dampening, settings.stiffness, 0)
+      spring: createSpring(settings.dampening * settings.stiffness, settings.stiffness, 0)
     }
   }
 
@@ -185,7 +195,7 @@ function setup () {
   })
 
   positions = new Float32Array(delaunay.triangles.length * 3)
-  positionsBuffer = regl.buffer()
+  positionsBuffer = regl.buffer(positions)
 
   renderFrequencies = regl({
     vert: glsl`
@@ -258,7 +268,7 @@ const renderGlobals = regl({
   }
 })
 
-function start () {
+function startLoop () {
   regl.frame(({ time }) => {
     camera.tick()
     camera.up = [camera.up[0], camera.up[1], 999]
@@ -294,7 +304,7 @@ function start () {
     })
     renderToBlurredFBO(() => {
       regl.clear({
-        color: [0.18, 0.18, 0.18, 0.99],
+        color: [0.18, 0.18, 0.18, 1],
         depth: 1
       })
       renderGlobals(() => {

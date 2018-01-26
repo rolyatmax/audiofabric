@@ -10,55 +10,62 @@ const settings = {
   stiffness: 0.85, // 0.9
   speed: 50,
   precision: 0.98,
-  lineOpacity: 0.14,
+  lineOpacity: 0.17,
   turnGranularity: 12,
-  startSpread: 300,
+  startSpread: Math.max(window.innerWidth, window.innerHeight) * 0.35,
   particleDieRate: 0,
   colorThreshold: 200,
   particleSize: 1
 }
 
-const container = document.body.appendChild(document.createElement('div'))
-css(container, {
-  position: 'absolute',
-  height: '100vh',
-  width: '100vw',
-  top: 0,
-  left: 0,
-  zIndex: 8
-})
-
-const canvas = container.appendChild(document.createElement('canvas'))
+const container = document.querySelector('.title-card-container')
+const canvas = container.querySelector('canvas')
 const ctx = canvas.getContext('2d')
+ctx.globalCompositeOperation = 'lighter'
 const resize = fit(canvas)
 window.addEventListener('resize', resize)
 
-let rand, points, pixelPicker, rAFToken
+const instructions = container.querySelector('.instructions')
+const button = container.querySelector('button')
+
+let rand, points, pixelPicker, rAFToken, start
 
 module.exports = function createTitleCard () {
-  function show () {
-    setup()
-    loop()
+  return {
+    show: function show () {
+      start = Date.now()
+      setTimeout(() => {
+        css(instructions, { opacity: 1 })
+      }, 1500)
+      setup()
+      loop()
+      return new Promise((resolve) => {
+        button.addEventListener('click', (e) => {
+          e.preventDefault()
+          remove()
+          activateDrawers()
+          resolve()
+          return false
+        })
+      })
+    }
   }
 
   function remove () {
     css(canvas, {
-      transition: 'opacity 3500ms linear',
+      transition: 'opacity 3000ms linear',
       opacity: 0
     })
+    css(instructions, { opacity: 0 })
     setTimeout(() => {
       window.removeEventListener('resize', resize)
       window.cancelAnimationFrame(rAFToken)
       container.parentElement.removeChild(container)
-    }, 4000)
-  }
-
-  return {
-    show: show,
-    remove: remove
+    }, 5000)
   }
 
   function loop () {
+    if (Date.now() - start > 30000) return
     rAFToken = window.requestAnimationFrame(loop)
     update()
     draw()
@@ -77,7 +84,6 @@ module.exports = function createTitleCard () {
         y: Math.sin(rads) * mag + ctx.canvas.height / 2,
         angle: createSpring(settings.dampening, settings.stiffness, rand() * Math.PI * 2),
         speed: rand() * settings.speed / 40,
-        size: createSpring(settings.dampening, settings.stiffness, 0),
         entropy: rand(),
         isActive: true,
         line: []
@@ -92,10 +98,11 @@ module.exports = function createTitleCard () {
       const averageVal = getAveragePixelVal(color)
       const isOnActivePixel = p.line.length || averageVal < settings.colorThreshold
 
+      if (isOnActivePixel) {
+        p.line.push([p.x, p.y])
+      }
+
       if (rand() < settings.precision) {
-        if (isOnActivePixel) {
-          p.line.push([p.x, p.y])
-        }
         updateNextAngle(p, pixelPicker)
       }
 
@@ -104,7 +111,6 @@ module.exports = function createTitleCard () {
       const velY = Math.sin(angle) * p.speed
       p.x += velX
       p.y += velY
-      p.isOnActivePixel = isOnActivePixel
 
       if (rand() < settings.particleDieRate / 10) {
         p.isActive = false
@@ -144,6 +150,16 @@ module.exports = function createTitleCard () {
     }
   }
 
+  function activateDrawers () {
+    settings.precision = 0.4
+    points.forEach((p) => {
+      p.isActive = true
+      p.speed *= rand() * 10
+      p.angle = createSpring(0.05, 0.9, p.angle.tick())
+      p.angle.updateValue(rand() * Math.PI * 2)
+    })
+  }
+
   function draw () {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     if (settings.particleSize) {
@@ -161,7 +177,7 @@ module.exports = function createTitleCard () {
     ctx.beginPath()
     ctx.strokeStyle = `rgba(200, 200, 255, ${settings.lineOpacity / 2})`
     points.forEach((p) => {
-      if (p.line.length) {
+      if (p.line.length > 1) {
         ctx.moveTo(p.line[0][0], p.line[0][1])
         p.line.slice(1).forEach(pt => {
           ctx.lineTo(pt[0], pt[1])
@@ -211,9 +227,9 @@ function makePixelPicker (canvas) {
 function printText (context, text, size) {
   // context.font = `bold ${size}px Helvetica`
   // context.font = `bold ${size}px monospace`
-  context.font = `${size}px monospace`
+  context.font = `${size}px Open Sans`
   context.textAlign = 'center'
   context.textBaseline = 'middle'
   context.fillStyle = 'rgb(0, 0, 0)'
-  context.fillText(text, context.canvas.width / 2, context.canvas.height / 2)
+  context.fillText(text, context.canvas.width / 2, context.canvas.height / 3)
 }
