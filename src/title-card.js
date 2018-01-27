@@ -5,7 +5,7 @@ const { createSpring } = require('spring-animator')
 
 const settings = {
   text: 'audiofabric',
-  particles: 800,
+  particles: 600,
   dampening: 0.35, // 0.17
   stiffness: 0.85, // 0.9
   speed: 50,
@@ -226,8 +226,6 @@ function makePixelPicker (canvas) {
 }
 
 function printText (context, text, size) {
-  // context.font = `bold ${size}px Helvetica`
-  // context.font = `bold ${size}px monospace`
   context.font = `${size}px "Open Sans"`
   context.textAlign = 'center'
   context.textBaseline = 'middle'

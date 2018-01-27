@@ -1,7 +1,6 @@
 const createRegl = require('regl')
 const glsl = require('glslify')
 const mat4 = require('gl-mat4')
-const createCamera = require('3d-view-controls')
 const css = require('dom-css')
 const fit = require('canvas-fit')
 const { GUI } = require('dat-gui')
@@ -11,6 +10,7 @@ const Alea = require('alea')
 const { createSpring } = require('spring-animator')
 const Delaunator = require('delaunator')
 const createAnalyser = require('web-audio-analyser')
+const createCamera = require('./camera')
 const createTitleCard = require('./title-card')
 const createAudioControls = require('./audio-controls')
 const createRenderBloom = require('./render-bloom')
@@ -21,15 +21,8 @@ const titleCard = createTitleCard()
 const canvas = document.querySelector('canvas.viz')
 const resize = fit(canvas)
 window.addEventListener('resize', () => { resize(); setup() }, false)
-const camera = createCamera(canvas)
+const camera = createCamera(canvas, [2.5, 2.5, 2.5], [0, 0, 0])
 const regl = createRegl(canvas)
-
-camera.zoomSpeed = 4
-camera.lookAt(
-  [2.5, 2.5, 2.5],
-  [0, 0, 0],
-  [0.52, -0.11, 50]
-)
 
 let analyser, delaunay, points, positions, positionsBuffer, renderFrequencies,
   renderGrid, blurredFbo, renderToBlurredFBO
@@ -114,7 +107,9 @@ const settings = {
   linesStiffness: 0.9,
   linesAnimationOffset: 20,
   gridMaxHeight: 0.28,
-  roam: true
+
+  motionBlur: true,
+  motionBlurAmount: 0.5
 }
 
 const gui = new GUI()
@@ -136,7 +131,8 @@ const gridGUI = gui.addFolder('grid')
 gridGUI.add(settings, 'gridLines', 1, 180).step(1).onChange(setup)
 gridGUI.add(settings, 'linesAnimationOffset', 0, 100).step(1)
 gridGUI.add(settings, 'gridMaxHeight', 0.01, 0.8).step(0.01)
-gui.add(settings, 'roam')
+// gui.add(settings, 'motionBlur')
+// gui.add(settings, 'motionBlurAmount', 0.01, 1).step(0.01)
 
 function setup () {
   const rand = new Alea(settings.seed)
@@ -264,23 +260,56 @@ const renderGlobals = regl({
       0.01,
       1000
     ),
-    view: () => camera.matrix,
-    eye: () => camera.eye,
+    view: () => camera.getMatrix(),
     time: ({ time }) => time
   }
 })
 
+const renderColoredQuad = regl({
+  vert: glsl`
+    precision highp float;
+    attribute vec2 position;
+    void main() {
+      gl_Position = vec4(position, 0, 1);
+    }
+  `,
+  frag: glsl`
+    precision highp float;
+    uniform vec4 color;
+    void main () {
+      gl_FragColor = color;
+    }
+  `,
+  blend: {
+    enable: true,
+    func: {
+      srcRGB: 'src alpha',
+      srcAlpha: 1,
+      dstRGB: 'one minus src alpha',
+      dstAlpha: 1
+    },
+    equation: {
+      rgb: 'add',
+      alpha: 'add'
+    }
+  },
+  uniforms: {
+    color: regl.prop('color')
+  },
+  attributes: {
+    position: [
+      -1, -1,
+      -1, 4,
+      4, -1
+    ]
+  },
+  count: 3,
+  primitive: 'triangles'
+})
+
 function startLoop () {
   regl.frame(({ time }) => {
-    camera.tick()
-    camera.up = [camera.up[0], camera.up[1], 999]
-    if (settings.roam) {
-      camera.center = [
-        Math.sin(time / 12) * 2.5,
-        Math.cos(time / 12) * 4.5,
-        (Math.sin(time / 12) * 0.5 + 0.5) * 3 + 0.5
-      ]
-    }
+    camera.tick({ time })
     update()
     renderToFBO(() => {
       regl.clear({
@@ -305,10 +334,14 @@ function startLoop () {
       })
     })
     renderToBlurredFBO(() => {
-      regl.clear({
-        color: [0.18, 0.18, 0.18, 1],
-        depth: 1
-      })
+      if (settings.motionBlur) {
+        renderColoredQuad({ color: [0.18, 0.18, 0.18, settings.motionBlurAmount] })
+      } else {
+        regl.clear({
+          color: [0.18, 0.18, 0.18, 1],
+          depth: 1
+        })
+      }
       renderGlobals(() => {
         renderGrid({
           frequencyVals: freqMapFBO,

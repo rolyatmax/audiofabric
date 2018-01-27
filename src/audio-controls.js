@@ -32,10 +32,14 @@ module.exports = function createAudioControls (audio, tracks) {
 
   setTrack(tracks[0])
 
+  let lastTime
   function tick () {
-    const t = audio.currentTime / audio.duration
-    css(progressEl, 'width', `${t * 100}%`)
-    timeEl.innerText = formatSeconds(audio.currentTime)
+    if (audio.currentTime !== lastTime) {
+      const t = audio.currentTime / audio.duration
+      css(progressEl, 'width', `${t * 100}%`)
+      timeEl.innerText = formatSeconds(audio.currentTime)
+    }
+    lastTime = audio.currentTime
   }
 
   seekerEl.addEventListener('click', e => {

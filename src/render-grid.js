@@ -26,14 +26,15 @@ module.exports = function createRenderGrid (regl, settings) {
       for (let q = 0; q < granularity; q++) {
         const t = q / granularity * 2 - 1
         const nextT = (q + 1) / granularity * 2 - 1
-        linesPositions[k++] = [
-          line.axis === 'x' ? nextOffset : t,
-          line.axis === 'y' ? nextOffset : t
-        ]
-        linesPositions[k++] = [
-          line.axis === 'x' ? nextOffset : nextT,
-          line.axis === 'y' ? nextOffset : nextT
-        ]
+        linesPositions[k] = linesPositions[k] || []
+        linesPositions[k][0] = line.axis === 'x' ? nextOffset : t
+        linesPositions[k][1] = line.axis === 'y' ? nextOffset : t
+        k += 1
+
+        linesPositions[k] = linesPositions[k] || []
+        linesPositions[k][0] = line.axis === 'x' ? nextOffset : nextT
+        linesPositions[k][1] = line.axis === 'y' ? nextOffset : nextT
+        k += 1
       }
     }
     return linesPositions
