@@ -53,6 +53,14 @@ const tracks = [
   {title: 'Lost It To Trying', artist: 'Son Lux', path: 'src/audio/02-Lost_It_To_Trying.mp3'},
   {title: 'Adagio for Strings', artist: 'Samuel Barber', path: 'src/audio/08-Adagio_for_Strings.mp3'}
 ]
+
+const isIOS = /(iPhone|iPad)/i.test(navigator.userAgent)
+if (isIOS) {
+  const iOSInstructions = document.querySelector('.ios-instructions')
+  css(iOSInstructions, { display: 'block' })
+  throw new Error('IOS not supported')
+}
+
 setupAudio(tracks).then(([audioAnalyser, audio]) => {
   const audioControls = createAudioControls(audio, tracks)
 
