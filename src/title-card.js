@@ -10,7 +10,7 @@ const settings = {
   stiffness: 0.85, // 0.9
   speed: 50,
   precision: 0.98,
-  lineOpacity: 0.3,
+  lineOpacity: 0.17,
   turnGranularity: 12,
   startSpread: Math.max(window.innerWidth, window.innerHeight) * 0.35,
   particleDieRate: 0,
@@ -54,7 +54,7 @@ module.exports = function createTitleCard () {
   function remove () {
     isFading = true
     css(canvas, {
-      transition: 'opacity 1000ms linear',
+      transition: 'opacity 1500ms linear',
       opacity: 0
     })
     css(instructions, { opacity: 0 })
@@ -62,7 +62,7 @@ module.exports = function createTitleCard () {
       window.removeEventListener('resize', resize)
       window.cancelAnimationFrame(rAFToken)
       container.parentElement.removeChild(container)
-    }, 1500)
+    }, 1700)
   }
 
   function loop () {
@@ -228,7 +228,7 @@ function makePixelPicker (canvas) {
 function printText (context, text, size) {
   // context.font = `bold ${size}px Helvetica`
   // context.font = `bold ${size}px monospace`
-  context.font = `${size}px Open Sans`
+  context.font = `${size}px "Open Sans"`
   context.textAlign = 'center'
   context.textBaseline = 'middle'
   context.fillStyle = 'rgb(0, 0, 0)'

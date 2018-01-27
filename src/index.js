@@ -75,7 +75,7 @@ setupAudio(tracks).then(([audioAnalyser, audio]) => {
   analyser.analyser.smoothingTimeConstant = 0.5
 
   titleCard.show()
-    .then(() => new Promise(resolve => setTimeout(resolve, 800)))
+    .then(() => new Promise(resolve => setTimeout(resolve, 1000)))
     .then(() => {
       css(audioControls.el, {
         transition: 'opacity 1s linear',
