@@ -10,7 +10,7 @@ const settings = {
   stiffness: 0.85, // 0.9
   speed: 50,
   precision: 0.98,
-  lineOpacity: 0.17,
+  lineOpacity: 0.3,
   turnGranularity: 12,
   startSpread: Math.max(window.innerWidth, window.innerHeight) * 0.35,
   particleDieRate: 0,
@@ -28,7 +28,7 @@ window.addEventListener('resize', resize)
 const instructions = container.querySelector('.instructions')
 const button = container.querySelector('button')
 
-let rand, points, pixelPicker, rAFToken, start
+let rand, points, pixelPicker, rAFToken, start, isFading
 
 module.exports = function createTitleCard () {
   return {
@@ -52,8 +52,9 @@ module.exports = function createTitleCard () {
   }
 
   function remove () {
+    isFading = true
     css(canvas, {
-      transition: 'opacity 3000ms linear',
+      transition: 'opacity 1000ms linear',
       opacity: 0
     })
     css(instructions, { opacity: 0 })
@@ -61,11 +62,11 @@ module.exports = function createTitleCard () {
       window.removeEventListener('resize', resize)
       window.cancelAnimationFrame(rAFToken)
       container.parentElement.removeChild(container)
-    }, 5000)
+    }, 1500)
   }
 
   function loop () {
-    if (Date.now() - start > 30000) return
+    if (!isFading && (Date.now() - start) > 30000) return
     rAFToken = window.requestAnimationFrame(loop)
     update()
     draw()
@@ -175,7 +176,7 @@ module.exports = function createTitleCard () {
     }
 
     ctx.beginPath()
-    ctx.strokeStyle = `rgba(200, 200, 255, ${settings.lineOpacity / 2})`
+    ctx.strokeStyle = `rgba(200, 200, 255, ${settings.lineOpacity})`
     points.forEach((p) => {
       if (p.line.length > 1) {
         ctx.moveTo(p.line[0][0], p.line[0][1])

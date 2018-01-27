@@ -54,8 +54,8 @@ const renderBloom = createRenderBloom(regl, canvas)
 const renderBlur = createRenderBlur(regl)
 
 const tracks = [
-  {title: 'Another New World', artist: 'Punch Brothers', path: 'src/audio/01-Another_New_World.mp3'},
   {title: '715 - CRΣΣKS', artist: 'Bon Iver', path: 'src/audio/03-715-Creeks.mp3'},
+  {title: 'Another New World', artist: 'Punch Brothers', path: 'src/audio/01-Another_New_World.mp3'},
   {title: 'The Wilder Sun', artist: 'Jon Hopkins', path: 'src/audio/01-The_Wilder_Sun.mp3'},
   {title: 'Lost It To Trying', artist: 'Son Lux', path: 'src/audio/02-Lost_It_To_Trying.mp3'},
   {title: 'Adagio for Strings', artist: 'Samuel Barber', path: 'src/audio/08-Adagio_for_Strings.mp3'}
@@ -74,20 +74,22 @@ setupAudio(tracks).then(([audioAnalyser, audio]) => {
   analyser.analyser.maxDecibels = -30
   analyser.analyser.smoothingTimeConstant = 0.5
 
-  titleCard.show().then(() => {
-    css(audioControls.el, {
-      transition: 'opacity 1s linear',
-      opacity: 1
+  titleCard.show()
+    .then(() => new Promise(resolve => setTimeout(resolve, 800)))
+    .then(() => {
+      css(audioControls.el, {
+        transition: 'opacity 1s linear',
+        opacity: 1
+      })
+      css(gui.domElement.parentElement, {
+        transition: 'opacity 1s linear',
+        opacity: 1
+      })
+      window.requestAnimationFrame(loop)
+      audio.play()
+      setup()
+      startLoop()
     })
-    css(gui.domElement.parentElement, {
-      transition: 'opacity 1s linear',
-      opacity: 1
-    })
-    window.requestAnimationFrame(loop)
-    audio.play()
-    setup()
-    startLoop()
-  })
 })
 
 const settings = {
@@ -328,15 +330,15 @@ function startLoop () {
 // ///// helpers (to abstract down the line?) //////
 
 function setupAudio (tracks) {
-  const audio = new window.Audio()
-  audio.crossOrigin = 'anonymous'
-  audio.src = tracks[0].path
-
   return new Promise((resolve, reject) => {
+    const audio = new window.Audio()
     audio.addEventListener('canplay', function onLoad () {
       audio.removeEventListener('canplay', onLoad)
       const analyser = createAnalyser(audio, { audible: true, stereo: false })
       resolve([analyser, audio])
     })
+
+    audio.crossOrigin = 'anonymous'
+    audio.src = tracks[0].path
   })
 }
