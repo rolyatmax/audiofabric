@@ -168,8 +168,6 @@ function setup () {
     const position = [
       Math.cos(rads) * mag,
       Math.sin(rads) * mag
-      // rand() * 2 - 1,
-      // rand() * 2 - 1
     ]
     const id = points.length
     const point = createPoint(id, position)
