@@ -75,6 +75,14 @@ setupAudio(tracks).then(([audioAnalyser, audio]) => {
   analyser.analyser.maxDecibels = -30
   analyser.analyser.smoothingTimeConstant = 0.5
 
+  setup()
+
+  // stupid hack: the first render causes a flash of black on the page,
+  // this just forces it to happen at the start of the app, instead of when
+  // the music starts, which is jarring
+  const renderLoop = startLoop()
+  setTimeout(renderLoop.cancel.bind(renderLoop), 1000)
+
   titleCard.show()
     .then(() => new Promise(resolve => setTimeout(resolve, 1000)))
     .then(() => {
@@ -88,7 +96,7 @@ setupAudio(tracks).then(([audioAnalyser, audio]) => {
       })
       window.requestAnimationFrame(loop)
       audio.play()
-      setup()
+      camera.start()
       startLoop()
     })
 })
@@ -110,14 +118,14 @@ const settings = {
   blurWeight: 0.8,
   originalWeight: 1.2,
 
-  gridLines: 130,
+  gridLines: 180,
   linesDampening: 0.02,
   linesStiffness: 0.9,
-  linesAnimationOffset: 20,
+  linesAnimationOffset: 12,
   gridMaxHeight: 0.28,
 
   motionBlur: true,
-  motionBlurAmount: 0.5
+  motionBlurAmount: 0.45
 }
 
 const gui = new GUI()
@@ -136,7 +144,7 @@ bloomGUI.add(settings, 'blurRadius', 0, 20).step(1)
 bloomGUI.add(settings, 'blurWeight', 0, 2).step(0.01)
 bloomGUI.add(settings, 'originalWeight', 0, 2).step(0.01)
 const gridGUI = gui.addFolder('grid')
-gridGUI.add(settings, 'gridLines', 1, 180).step(1).onChange(setup)
+gridGUI.add(settings, 'gridLines', 10, 300).step(1).onChange(setup)
 gridGUI.add(settings, 'linesAnimationOffset', 0, 100).step(1)
 gridGUI.add(settings, 'gridMaxHeight', 0.01, 0.8).step(0.01)
 // gui.add(settings, 'motionBlur')
@@ -316,21 +324,13 @@ const renderColoredQuad = regl({
 })
 
 function startLoop () {
-  regl.frame(({ time }) => {
+  return regl.frame(({ time }) => {
     camera.tick({ time })
     update()
     renderToFBO(() => {
-      regl.clear({
-        color: [0, 0, 0, 1],
-        depth: 1
-      })
       renderFrequencies()
     })
     renderToFreqMapFBO(() => {
-      regl.clear({
-        color: [0, 0, 0, 1],
-        depth: 1
-      })
       const rads = settings.blurAngle * Math.PI
       const direction = [
         Math.cos(rads) * settings.blurMag,

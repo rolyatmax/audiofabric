@@ -31,7 +31,7 @@
 
     html, body {
       color: #e2e2e2;
-      background-color: #2f2f2f;
+      background-color: rgb(45, 45, 45);
       font-family: 'Open Sans', sans-serif;
       -webkit-font-smoothing: antialiased;
       margin: 0;
@@ -153,6 +153,15 @@
     .track.selected {
       color: #eee;
     }
+    .hint {
+      display: none;
+      padding: 20px;
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+      border-top: 1px solid rgb(70, 70, 70);
+      color: #aaa;
+    }
   </style>
 </head>
 <body>
@@ -181,6 +190,7 @@
       <div class="progress"></div>
     </div>
     <ul class="track-selector"></ul>
+    <div class="hint">DRAG AND SCROLL TO PAN AND ZOOM</div>
   </div>
   <script src="bundle.js"></script>
   <!-- <script>

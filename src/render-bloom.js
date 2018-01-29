@@ -139,10 +139,6 @@ module.exports = function createRenderBloom (regl, canvas) {
 
   return function render ({ iChannel0, blurMag, blurWeight, originalWeight }) {
     regl({ framebuffer: tempFbo })(() => {
-      regl.clear({
-        color: [0.18, 0.18, 0.18, 1],
-        depth: 1
-      })
       renderBloomBlur({ iChannel0, blurMag })
     })
     renderBloomCombine({

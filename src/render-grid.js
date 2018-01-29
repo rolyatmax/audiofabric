@@ -20,21 +20,18 @@ module.exports = function createRenderGrid (regl, settings) {
 
   function getLinesPositions (linesPositions, lines) {
     const granularity = 50 // settings.gridLines
+    linesPositions = linesPositions || new Float32Array(lines.length * granularity * 2)
     let k = 0
     for (let line of lines) {
       const nextOffset = line.offset.tick(1, false)
       for (let q = 0; q < granularity; q++) {
         const t = q / granularity * 2 - 1
         const nextT = (q + 1) / granularity * 2 - 1
-        linesPositions[k] = linesPositions[k] || []
-        linesPositions[k][0] = line.axis === 'x' ? nextOffset : t
-        linesPositions[k][1] = line.axis === 'y' ? nextOffset : t
-        k += 1
+        linesPositions[k++] = line.axis === 'x' ? nextOffset : t
+        linesPositions[k++] = line.axis === 'y' ? nextOffset : t
 
-        linesPositions[k] = linesPositions[k] || []
-        linesPositions[k][0] = line.axis === 'x' ? nextOffset : nextT
-        linesPositions[k][1] = line.axis === 'y' ? nextOffset : nextT
-        k += 1
+        linesPositions[k++] = line.axis === 'x' ? nextOffset : nextT
+        linesPositions[k++] = line.axis === 'y' ? nextOffset : nextT
       }
     }
     return linesPositions
@@ -92,7 +89,7 @@ module.exports = function createRenderGrid (regl, settings) {
     attributes: {
       position: linesBuffer
     },
-    count: linesPositions.length,
+    count: linesPositions.length / 2,
     primitive: 'lines'
   })
 
