@@ -75,10 +75,15 @@
     .ios-instructions {
       display: none;
       text-align: center;
-      margin: 45vh auto 0;
+      margin: 5vh auto 0;
+      width: 70vw;
+    }
+    .ios-instructions h2 {
       font-size: 28px;
       font-weight: 800;
-      width: 70vw;
+    }
+    .ios-instructions video {
+      width: 100%;
     }
     .controls-container {
       opacity: 0;
@@ -178,8 +183,10 @@
       <button>READY</button>
     </div>
     <div class="ios-instructions">
-      Unfortunately, I've had some issues getting this running on iOS. Please
-      take a look in a desktop browser. Preferably Chrome. 😬
+      <h2>Unfortunately, I've had some issues getting this running on iOS. Please
+      take a look in a desktop browser. Preferably Chrome. 😬 <br><br> In the
+      meantime, here's a video (remember to turn on your sound!):</h2>
+      <video controls src="video/audiofabric.mov" type="video/quicktime" class="media-document iPhone video"></video>
     </div>
   </div>
   <div class="controls-container">

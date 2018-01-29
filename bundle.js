@@ -19103,6 +19103,7 @@ const isIOS = /(iPhone|iPad)/i.test(navigator.userAgent)
 if (isIOS) {
   const iOSInstructions = document.querySelector('.ios-instructions')
   css(iOSInstructions, { display: 'block' })
+  document.querySelectorAll('canvas').forEach(el => el.remove())
   throw new Error('IOS not supported')
 }
 
