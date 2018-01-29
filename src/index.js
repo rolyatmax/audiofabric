@@ -47,11 +47,11 @@ const renderBloom = createRenderBloom(regl, canvas)
 const renderBlur = createRenderBlur(regl)
 
 const tracks = [
-  {title: '715 - CRΣΣKS', artist: 'Bon Iver', path: 'src/audio/03-715-Creeks.mp3'},
-  {title: 'Another New World', artist: 'Punch Brothers', path: 'src/audio/01-Another_New_World.mp3'},
-  {title: 'The Wilder Sun', artist: 'Jon Hopkins', path: 'src/audio/01-The_Wilder_Sun.mp3'},
-  {title: 'Lost It To Trying', artist: 'Son Lux', path: 'src/audio/02-Lost_It_To_Trying.mp3'},
-  {title: 'Adagio for Strings', artist: 'Samuel Barber', path: 'src/audio/08-Adagio_for_Strings.mp3'}
+  {title: '715 - CRΣΣKS', artist: 'Bon Iver', path: 'src/audio/715-creeks.mp3'},
+  {title: 'Another New World', artist: 'Punch Brothers', path: 'src/audio/another-new-world.mp3'},
+  {title: 'The Wilder Sun', artist: 'Jon Hopkins', path: 'src/audio/the-wilder-sun.mp3'},
+  {title: 'Lost It To Trying', artist: 'Son Lux', path: 'src/audio/lost-it-to-trying.mp3'},
+  {title: 'Adagio for Strings', artist: 'Samuel Barber', path: 'src/audio/adagio-for-strings.mp3'}
 ]
 
 const isIOS = /(iPhone|iPad)/i.test(navigator.userAgent)
