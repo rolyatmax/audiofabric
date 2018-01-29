@@ -12,21 +12,21 @@
   <meta property="og:description" content="A 3D music visualization.">
   <meta property="og:type" content="article">
 
-  <!-- <meta property="og:image" content="https://tbaldw.in/audiofabric/images/audiofabric.png"> -->
-  <!-- <meta property="og:image:type" content="image/png"> -->
+  <meta property="og:image" content="https://tbaldw.in/audiofabric/images/audiofabric.png">
+  <meta property="og:image:type" content="image/png">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="https://tbaldw.in">
   <meta name="twitter:creator" content="@taylorbaldwin">
   <meta name="twitter:title" content="audiofabric">
   <meta name="twitter:description" content="A 3D music visualization.">
-  <!-- <meta name="twitter:image:src" content="https://tbaldw.in/audiofabric/images/audiofabric.png"> -->
+  <meta name="twitter:image:src" content="https://tbaldw.in/audiofabric/images/audiofabric.png">
   <style>
     @font-face {
       font-family: 'Open Sans';
-      src: url('/src/fonts/OpenSans-Regular.ttf') format('ttf'),
-           url('/src/fonts/OpenSans-Regular.woff') format('woff'),
-           url('/src/fonts/OpenSans-Regular.woff2') format('woff2');
+      src: url('src/fonts/OpenSans-Regular.ttf') format('ttf'),
+           url('src/fonts/OpenSans-Regular.woff') format('woff'),
+           url('src/fonts/OpenSans-Regular.woff2') format('woff2');
     }
 
     html, body {
@@ -74,6 +74,11 @@
     }
     .ios-instructions {
       display: none;
+      text-align: center;
+      margin: 45vh auto 0;
+      font-size: 28px;
+      font-weight: 800;
+      width: 70vw;
     }
     .controls-container {
       opacity: 0;
@@ -173,7 +178,8 @@
       <button>READY</button>
     </div>
     <div class="ios-instructions">
-      Ugh, iOS, you've worn me out.
+      Unfortunately, I've had some issues getting this running on iOS. Please
+      take a look in a desktop browser. Preferably Chrome. 😬
     </div>
   </div>
   <div class="controls-container">
@@ -193,13 +199,13 @@
     <div class="hint">DRAG AND SCROLL TO PAN AND ZOOM</div>
   </div>
   <script src="bundle.js"></script>
-  <!-- <script>
+  <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
     })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
     ga('create', 'UA-36884625-1', 'auto');
     ga('send', 'pageview');
-  </script> -->
+  </script>
 </body>
 </html>
