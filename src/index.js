@@ -9,6 +9,7 @@ const shuffle = require('shuffle-array')
 const Alea = require('alea')
 const { createSpring } = require('spring-animator')
 const Delaunator = require('delaunator')
+const createPlayer = require('web-audio-player')
 const createAnalyser = require('web-audio-analyser')
 const createCamera = require('./camera')
 const createTitleCard = require('./title-card')
@@ -20,7 +21,11 @@ const createRenderGrid = require('./render-grid')
 const titleCard = createTitleCard()
 const canvas = document.querySelector('canvas.viz')
 const resize = fit(canvas)
-window.addEventListener('resize', () => { resize(); setup(); titleCard.resize() }, false)
+window.addEventListener('resize', () => {
+  resize()
+  if (hasSetUp) setup()
+  titleCard.resize()
+}, false)
 const camera = createCamera(canvas, [2.5, 2.5, 2.5], [0, 0, 0])
 const regl = createRegl(canvas)
 
@@ -63,7 +68,7 @@ if (isIOS) {
 }
 
 setupAudio(tracks).then(([audioAnalyser, audio]) => {
-  const audioControls = createAudioControls(audio, tracks)
+  const audioControls = createAudioControls(audio.element, tracks)
 
   function loop () {
     window.requestAnimationFrame(loop)
@@ -151,7 +156,9 @@ gridGUI.add(settings, 'gridMaxHeight', 0.01, 0.8).step(0.01)
 // gui.add(settings, 'motionBlur')
 // gui.add(settings, 'motionBlurAmount', 0.01, 1).step(0.01)
 
+let hasSetUp = false
 function setup () {
+  hasSetUp = true
   const rand = new Alea(settings.seed)
   points = []
 
@@ -371,14 +378,25 @@ function startLoop () {
 
 function setupAudio (tracks) {
   return new Promise((resolve, reject) => {
-    const audio = new window.Audio()
-    audio.addEventListener('canplay', function onLoad () {
-      audio.removeEventListener('canplay', onLoad)
-      const analyser = createAnalyser(audio, { audible: true, stereo: false })
+    const audio = createPlayer(tracks[0].path)
+    audio.on('load', function () {
+      // audio.node.connect(audio.context.destination)
+      const analyser = createAnalyser(audio.node, audio.context, { audible: true, stereo: false })
       resolve([analyser, audio])
     })
-
-    audio.crossOrigin = 'anonymous'
-    audio.src = tracks[0].path
+    // const audio = new window.Audio()
+    window.audio = audio
+    // console.log('Loading Audio')
+    // audio.addEventListener('error', () => { console.log('Audio Error!') })
+    // audio.addEventListener('canplay', function onLoad () {
+    //   console.log('Audio Loaded!')
+    //   audio.removeEventListener('canplay', onLoad)
+    //   const analyser = null // createAnalyser(audio, { audible: true, stereo: false })
+    //   resolve([analyser, audio])
+    // })
+    //
+    // audio.crossOrigin = 'anonymous'
+    // audio.src = tracks[0].path
+    // audio.load()
   })
 }
