@@ -12,7 +12,7 @@ const settings = {
   precision: 0.98,
   lineOpacity: 0.17,
   turnGranularity: 12,
-  startSpread: Math.max(window.innerWidth, window.innerHeight) * 0.35,
+  startSpreadMultiplier: 0.35,
   particleDieRate: 0,
   colorThreshold: 200,
   particleSize: 1
@@ -32,7 +32,14 @@ let rand, points, pixelPicker, rAFToken, start, isFading
 
 module.exports = function createTitleCard () {
   return {
-    show: function show () {
+    resize: function () {
+      if (isFading) return
+      start = Date.now()
+      resize()
+      setup()
+      loop()
+    },
+    show: function () {
       start = Date.now()
       setTimeout(() => {
         css(instructions, { opacity: 1 })
@@ -67,6 +74,7 @@ module.exports = function createTitleCard () {
 
   function loop () {
     if (!isFading && (Date.now() - start) > 30000) return
+    window.cancelAnimationFrame(rAFToken)
     rAFToken = window.requestAnimationFrame(loop)
     update()
     draw()
@@ -79,7 +87,7 @@ module.exports = function createTitleCard () {
     pixelPicker = getSource()
     points = (new Array(settings.particles)).fill().map(() => {
       const rads = rand() * Math.PI * 2
-      const mag = Math.pow(rand(), 0.5) * settings.startSpread
+      const mag = Math.pow(rand(), 0.5) * settings.startSpreadMultiplier * Math.max(window.innerWidth, window.innerHeight)
       return {
         x: Math.cos(rads) * mag + ctx.canvas.width / 2,
         y: Math.sin(rads) * mag + ctx.canvas.height / 2,

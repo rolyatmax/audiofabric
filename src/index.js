@@ -20,7 +20,7 @@ const createRenderGrid = require('./render-grid')
 const titleCard = createTitleCard()
 const canvas = document.querySelector('canvas.viz')
 const resize = fit(canvas)
-window.addEventListener('resize', () => { resize(); setup() }, false)
+window.addEventListener('resize', () => { resize(); setup(); titleCard.resize() }, false)
 const camera = createCamera(canvas, [2.5, 2.5, 2.5], [0, 0, 0])
 const regl = createRegl(canvas)
 
