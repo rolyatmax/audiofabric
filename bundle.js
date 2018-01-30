@@ -227,7 +227,7 @@ function createCamera(element, options) {
   return camera
 }
 
-},{"3d-view":2,"mouse-change":51,"mouse-event-offset":52,"mouse-wheel":54,"right-now":62}],2:[function(require,module,exports){
+},{"3d-view":2,"mouse-change":58,"mouse-event-offset":59,"mouse-wheel":61,"right-now":72}],2:[function(require,module,exports){
 'use strict'
 
 module.exports = createViewController
@@ -350,7 +350,7 @@ function createViewController(options) {
     matrix: matrix
   }, mode)
 }
-},{"matrix-camera-controller":50,"orbit-camera-controller":57,"turntable-camera-controller":69}],3:[function(require,module,exports){
+},{"matrix-camera-controller":57,"orbit-camera-controller":65,"turntable-camera-controller":81}],3:[function(require,module,exports){
 /* The following list is defined in React's core */
 var IS_UNITLESS = {
   animationIterationCount: true,
@@ -566,6 +566,51 @@ module.exports = {
 }
 
 },{}],6:[function(require,module,exports){
+// sourced from:
+// http://www.leanbackplayer.com/test/h5mt.html
+// https://github.com/broofa/node-mime/blob/master/types.json
+var mimeTypes = require('./mime-types.json')
+
+var mimeLookup = {}
+Object.keys(mimeTypes).forEach(function (key) {
+  var extensions = mimeTypes[key]
+  extensions.forEach(function (ext) {
+    mimeLookup[ext] = key
+  })
+})
+
+module.exports = function lookup (ext) {
+  if (!ext) throw new TypeError('must specify extension string')
+  if (ext.indexOf('.') === 0) {
+    ext = ext.substring(1)
+  }
+  return mimeLookup[ext.toLowerCase()]
+}
+
+},{"./mime-types.json":7}],7:[function(require,module,exports){
+module.exports={
+  "audio/midi": ["mid", "midi", "kar", "rmi"],
+  "audio/mp4": ["mp4a", "m4a"],
+  "audio/mpeg": ["mpga", "mp2", "mp2a", "mp3", "m2a", "m3a"],
+  "audio/ogg": ["oga", "ogg", "spx"],
+  "audio/webm": ["weba"],
+  "audio/x-matroska": ["mka"],
+  "audio/x-mpegurl": ["m3u"],
+  "audio/wav": ["wav"],
+  "video/3gpp": ["3gp"],
+  "video/3gpp2": ["3g2"],
+  "video/mp4": ["mp4", "mp4v", "mpg4"],
+  "video/mpeg": ["mpeg", "mpg", "mpe", "m1v", "m2v"],
+  "video/ogg": ["ogv"],
+  "video/quicktime": ["qt", "mov"],
+  "video/webm": ["webm"],
+  "video/x-f4v": ["f4v"],
+  "video/x-fli": ["fli"],
+  "video/x-flv": ["flv"],
+  "video/x-m4v": ["m4v"],
+  "video/x-matroska": ["mkv", "mk3d", "mks"]
+}
+},{}],8:[function(require,module,exports){
 var size = require('element-size')
 
 module.exports = fit
@@ -615,7 +660,7 @@ function fit(canvas, parent, scale) {
   }
 }
 
-},{"element-size":13}],7:[function(require,module,exports){
+},{"element-size":15}],9:[function(require,module,exports){
 "use strict"
 
 function dcubicHermite(p0, v0, p1, v1, t, f) {
@@ -655,10 +700,10 @@ function cubicHermite(p0, v0, p1, v1, t, f) {
 
 module.exports = cubicHermite
 module.exports.derivative = dcubicHermite
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports = require('./vendor/dat.gui')
 module.exports.color = require('./vendor/dat.color')
-},{"./vendor/dat.color":9,"./vendor/dat.gui":10}],9:[function(require,module,exports){
+},{"./vendor/dat.color":11,"./vendor/dat.gui":12}],11:[function(require,module,exports){
 /**
  * dat-gui JavaScript Controller Library
  * http://code.google.com/p/dat-gui
@@ -1414,7 +1459,7 @@ dat.color.math = (function () {
 })(),
 dat.color.toString,
 dat.utils.common);
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /**
  * dat-gui JavaScript Controller Library
  * http://code.google.com/p/dat-gui
@@ -5075,7 +5120,7 @@ dat.dom.CenteredDiv = (function (dom, common) {
 dat.utils.common),
 dat.dom.dom,
 dat.utils.common);
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 module.exports = Delaunator;
@@ -5516,7 +5561,7 @@ function defaultGetY(p) {
     return p[1];
 }
 
-},{}],12:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var prefix = require('prefix-style')
 var toCamelCase = require('to-camel-case')
 var cache = { 'float': 'cssFloat' }
@@ -5579,7 +5624,7 @@ module.exports.get = function (element, properties) {
   }
 }
 
-},{"add-px-to-style":3,"prefix-style":59,"to-camel-case":65}],13:[function(require,module,exports){
+},{"add-px-to-style":3,"prefix-style":68,"to-camel-case":76}],15:[function(require,module,exports){
 module.exports = getSize
 
 function getSize(element) {
@@ -5615,7 +5660,311 @@ function parse(prop) {
   return parseFloat(prop) || 0
 }
 
-},{}],14:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+function EventEmitter() {
+  this._events = this._events || {};
+  this._maxListeners = this._maxListeners || undefined;
+}
+module.exports = EventEmitter;
+
+// Backwards-compat with node 0.10.x
+EventEmitter.EventEmitter = EventEmitter;
+
+EventEmitter.prototype._events = undefined;
+EventEmitter.prototype._maxListeners = undefined;
+
+// By default EventEmitters will print a warning if more than 10 listeners are
+// added to it. This is a useful default which helps finding memory leaks.
+EventEmitter.defaultMaxListeners = 10;
+
+// Obviously not all Emitters should be limited to 10. This function allows
+// that to be increased. Set to zero for unlimited.
+EventEmitter.prototype.setMaxListeners = function(n) {
+  if (!isNumber(n) || n < 0 || isNaN(n))
+    throw TypeError('n must be a positive number');
+  this._maxListeners = n;
+  return this;
+};
+
+EventEmitter.prototype.emit = function(type) {
+  var er, handler, len, args, i, listeners;
+
+  if (!this._events)
+    this._events = {};
+
+  // If there is no 'error' event listener then throw.
+  if (type === 'error') {
+    if (!this._events.error ||
+        (isObject(this._events.error) && !this._events.error.length)) {
+      er = arguments[1];
+      if (er instanceof Error) {
+        throw er; // Unhandled 'error' event
+      } else {
+        // At least give some kind of context to the user
+        var err = new Error('Uncaught, unspecified "error" event. (' + er + ')');
+        err.context = er;
+        throw err;
+      }
+    }
+  }
+
+  handler = this._events[type];
+
+  if (isUndefined(handler))
+    return false;
+
+  if (isFunction(handler)) {
+    switch (arguments.length) {
+      // fast cases
+      case 1:
+        handler.call(this);
+        break;
+      case 2:
+        handler.call(this, arguments[1]);
+        break;
+      case 3:
+        handler.call(this, arguments[1], arguments[2]);
+        break;
+      // slower
+      default:
+        args = Array.prototype.slice.call(arguments, 1);
+        handler.apply(this, args);
+    }
+  } else if (isObject(handler)) {
+    args = Array.prototype.slice.call(arguments, 1);
+    listeners = handler.slice();
+    len = listeners.length;
+    for (i = 0; i < len; i++)
+      listeners[i].apply(this, args);
+  }
+
+  return true;
+};
+
+EventEmitter.prototype.addListener = function(type, listener) {
+  var m;
+
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  if (!this._events)
+    this._events = {};
+
+  // To avoid recursion in the case that type === "newListener"! Before
+  // adding it to the listeners, first emit "newListener".
+  if (this._events.newListener)
+    this.emit('newListener', type,
+              isFunction(listener.listener) ?
+              listener.listener : listener);
+
+  if (!this._events[type])
+    // Optimize the case of one listener. Don't need the extra array object.
+    this._events[type] = listener;
+  else if (isObject(this._events[type]))
+    // If we've already got an array, just append.
+    this._events[type].push(listener);
+  else
+    // Adding the second element, need to change to array.
+    this._events[type] = [this._events[type], listener];
+
+  // Check for listener leak
+  if (isObject(this._events[type]) && !this._events[type].warned) {
+    if (!isUndefined(this._maxListeners)) {
+      m = this._maxListeners;
+    } else {
+      m = EventEmitter.defaultMaxListeners;
+    }
+
+    if (m && m > 0 && this._events[type].length > m) {
+      this._events[type].warned = true;
+      console.error('(node) warning: possible EventEmitter memory ' +
+                    'leak detected. %d listeners added. ' +
+                    'Use emitter.setMaxListeners() to increase limit.',
+                    this._events[type].length);
+      if (typeof console.trace === 'function') {
+        // not supported in IE 10
+        console.trace();
+      }
+    }
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+EventEmitter.prototype.once = function(type, listener) {
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  var fired = false;
+
+  function g() {
+    this.removeListener(type, g);
+
+    if (!fired) {
+      fired = true;
+      listener.apply(this, arguments);
+    }
+  }
+
+  g.listener = listener;
+  this.on(type, g);
+
+  return this;
+};
+
+// emits a 'removeListener' event iff the listener was removed
+EventEmitter.prototype.removeListener = function(type, listener) {
+  var list, position, length, i;
+
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  if (!this._events || !this._events[type])
+    return this;
+
+  list = this._events[type];
+  length = list.length;
+  position = -1;
+
+  if (list === listener ||
+      (isFunction(list.listener) && list.listener === listener)) {
+    delete this._events[type];
+    if (this._events.removeListener)
+      this.emit('removeListener', type, listener);
+
+  } else if (isObject(list)) {
+    for (i = length; i-- > 0;) {
+      if (list[i] === listener ||
+          (list[i].listener && list[i].listener === listener)) {
+        position = i;
+        break;
+      }
+    }
+
+    if (position < 0)
+      return this;
+
+    if (list.length === 1) {
+      list.length = 0;
+      delete this._events[type];
+    } else {
+      list.splice(position, 1);
+    }
+
+    if (this._events.removeListener)
+      this.emit('removeListener', type, listener);
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.removeAllListeners = function(type) {
+  var key, listeners;
+
+  if (!this._events)
+    return this;
+
+  // not listening for removeListener, no need to emit
+  if (!this._events.removeListener) {
+    if (arguments.length === 0)
+      this._events = {};
+    else if (this._events[type])
+      delete this._events[type];
+    return this;
+  }
+
+  // emit removeListener for all listeners on all events
+  if (arguments.length === 0) {
+    for (key in this._events) {
+      if (key === 'removeListener') continue;
+      this.removeAllListeners(key);
+    }
+    this.removeAllListeners('removeListener');
+    this._events = {};
+    return this;
+  }
+
+  listeners = this._events[type];
+
+  if (isFunction(listeners)) {
+    this.removeListener(type, listeners);
+  } else if (listeners) {
+    // LIFO order
+    while (listeners.length)
+      this.removeListener(type, listeners[listeners.length - 1]);
+  }
+  delete this._events[type];
+
+  return this;
+};
+
+EventEmitter.prototype.listeners = function(type) {
+  var ret;
+  if (!this._events || !this._events[type])
+    ret = [];
+  else if (isFunction(this._events[type]))
+    ret = [this._events[type]];
+  else
+    ret = this._events[type].slice();
+  return ret;
+};
+
+EventEmitter.prototype.listenerCount = function(type) {
+  if (this._events) {
+    var evlistener = this._events[type];
+
+    if (isFunction(evlistener))
+      return 1;
+    else if (evlistener)
+      return evlistener.length;
+  }
+  return 0;
+};
+
+EventEmitter.listenerCount = function(emitter, type) {
+  return emitter.listenerCount(type);
+};
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+
+},{}],17:[function(require,module,exports){
 'use strict'
 
 module.exports = createFilteredVector
@@ -5908,7 +6257,55 @@ function createFilteredVector(initState, initVelocity, initTime) {
   }
 }
 
-},{"binary-search-bounds":5,"cubic-hermite":7}],15:[function(require,module,exports){
+},{"binary-search-bounds":5,"cubic-hermite":9}],18:[function(require,module,exports){
+var isFunction = require('is-function')
+
+module.exports = forEach
+
+var toString = Object.prototype.toString
+var hasOwnProperty = Object.prototype.hasOwnProperty
+
+function forEach(list, iterator, context) {
+    if (!isFunction(iterator)) {
+        throw new TypeError('iterator must be a function')
+    }
+
+    if (arguments.length < 3) {
+        context = this
+    }
+    
+    if (toString.call(list) === '[object Array]')
+        forEachArray(list, iterator, context)
+    else if (typeof list === 'string')
+        forEachString(list, iterator, context)
+    else
+        forEachObject(list, iterator, context)
+}
+
+function forEachArray(array, iterator, context) {
+    for (var i = 0, len = array.length; i < len; i++) {
+        if (hasOwnProperty.call(array, i)) {
+            iterator.call(context, array[i], i, array)
+        }
+    }
+}
+
+function forEachString(string, iterator, context) {
+    for (var i = 0, len = string.length; i < len; i++) {
+        // no such thing as a sparse string.
+        iterator.call(context, string.charAt(i), i, string)
+    }
+}
+
+function forEachObject(object, iterator, context) {
+    for (var k in object) {
+        if (hasOwnProperty.call(object, k)) {
+            iterator.call(context, object[k], k, object)
+        }
+    }
+}
+
+},{"is-function":52}],19:[function(require,module,exports){
 module.exports = adjoint;
 
 /**
@@ -5942,7 +6339,7 @@ function adjoint(out, a) {
     out[15] =  (a00 * (a11 * a22 - a12 * a21) - a10 * (a01 * a22 - a02 * a21) + a20 * (a01 * a12 - a02 * a11));
     return out;
 };
-},{}],16:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports = clone;
 
 /**
@@ -5971,7 +6368,7 @@ function clone(a) {
     out[15] = a[15];
     return out;
 };
-},{}],17:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = copy;
 
 /**
@@ -6000,7 +6397,7 @@ function copy(out, a) {
     out[15] = a[15];
     return out;
 };
-},{}],18:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = create;
 
 /**
@@ -6028,7 +6425,7 @@ function create() {
     out[15] = 1;
     return out;
 };
-},{}],19:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = determinant;
 
 /**
@@ -6059,7 +6456,7 @@ function determinant(a) {
     // Calculate the determinant
     return b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
 };
-},{}],20:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports = fromQuat;
 
 /**
@@ -6107,7 +6504,7 @@ function fromQuat(out, q) {
 
     return out;
 };
-},{}],21:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = fromRotationTranslation;
 
 /**
@@ -6161,7 +6558,7 @@ function fromRotationTranslation(out, q, v) {
     
     return out;
 };
-},{}],22:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 module.exports = frustum;
 
 /**
@@ -6198,7 +6595,7 @@ function frustum(out, left, right, bottom, top, near, far) {
     out[15] = 0;
     return out;
 };
-},{}],23:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 module.exports = identity;
 
 /**
@@ -6226,7 +6623,7 @@ function identity(out) {
     out[15] = 1;
     return out;
 };
-},{}],24:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 module.exports = {
   create: require('./create')
   , clone: require('./clone')
@@ -6252,7 +6649,7 @@ module.exports = {
   , lookAt: require('./lookAt')
   , str: require('./str')
 }
-},{"./adjoint":15,"./clone":16,"./copy":17,"./create":18,"./determinant":19,"./fromQuat":20,"./fromRotationTranslation":21,"./frustum":22,"./identity":23,"./invert":25,"./lookAt":26,"./multiply":27,"./ortho":28,"./perspective":29,"./perspectiveFromFieldOfView":30,"./rotate":31,"./rotateX":32,"./rotateY":33,"./rotateZ":34,"./scale":35,"./str":36,"./translate":37,"./transpose":38}],25:[function(require,module,exports){
+},{"./adjoint":19,"./clone":20,"./copy":21,"./create":22,"./determinant":23,"./fromQuat":24,"./fromRotationTranslation":25,"./frustum":26,"./identity":27,"./invert":29,"./lookAt":30,"./multiply":31,"./ortho":32,"./perspective":33,"./perspectiveFromFieldOfView":34,"./rotate":35,"./rotateX":36,"./rotateY":37,"./rotateZ":38,"./scale":39,"./str":40,"./translate":41,"./transpose":42}],29:[function(require,module,exports){
 module.exports = invert;
 
 /**
@@ -6308,7 +6705,7 @@ function invert(out, a) {
 
     return out;
 };
-},{}],26:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 var identity = require('./identity');
 
 module.exports = lookAt;
@@ -6399,7 +6796,7 @@ function lookAt(out, eye, center, up) {
 
     return out;
 };
-},{"./identity":23}],27:[function(require,module,exports){
+},{"./identity":27}],31:[function(require,module,exports){
 module.exports = multiply;
 
 /**
@@ -6442,7 +6839,7 @@ function multiply(out, a, b) {
     out[15] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
     return out;
 };
-},{}],28:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 module.exports = ortho;
 
 /**
@@ -6479,7 +6876,7 @@ function ortho(out, left, right, bottom, top, near, far) {
     out[15] = 1;
     return out;
 };
-},{}],29:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = perspective;
 
 /**
@@ -6513,7 +6910,7 @@ function perspective(out, fovy, aspect, near, far) {
     out[15] = 0;
     return out;
 };
-},{}],30:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 module.exports = perspectiveFromFieldOfView;
 
 /**
@@ -6555,7 +6952,7 @@ function perspectiveFromFieldOfView(out, fov, near, far) {
 }
 
 
-},{}],31:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 module.exports = rotate;
 
 /**
@@ -6620,7 +7017,7 @@ function rotate(out, a, rad, axis) {
     }
     return out;
 };
-},{}],32:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 module.exports = rotateX;
 
 /**
@@ -6665,7 +7062,7 @@ function rotateX(out, a, rad) {
     out[11] = a23 * c - a13 * s;
     return out;
 };
-},{}],33:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 module.exports = rotateY;
 
 /**
@@ -6710,7 +7107,7 @@ function rotateY(out, a, rad) {
     out[11] = a03 * s + a23 * c;
     return out;
 };
-},{}],34:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 module.exports = rotateZ;
 
 /**
@@ -6755,7 +7152,7 @@ function rotateZ(out, a, rad) {
     out[7] = a13 * c - a03 * s;
     return out;
 };
-},{}],35:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 module.exports = scale;
 
 /**
@@ -6787,7 +7184,7 @@ function scale(out, a, v) {
     out[15] = a[15];
     return out;
 };
-},{}],36:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 module.exports = str;
 
 /**
@@ -6802,7 +7199,7 @@ function str(a) {
                     a[8] + ', ' + a[9] + ', ' + a[10] + ', ' + a[11] + ', ' + 
                     a[12] + ', ' + a[13] + ', ' + a[14] + ', ' + a[15] + ')';
 };
-},{}],37:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 module.exports = translate;
 
 /**
@@ -6841,7 +7238,7 @@ function translate(out, a, v) {
 
     return out;
 };
-},{}],38:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 module.exports = transpose;
 
 /**
@@ -6891,7 +7288,7 @@ function transpose(out, a) {
     
     return out;
 };
-},{}],39:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 module.exports = slerp
 
 /**
@@ -6944,7 +7341,7 @@ function slerp (out, a, b, t) {
   return out
 }
 
-},{}],40:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 module.exports = cross;
 
 /**
@@ -6964,7 +7361,7 @@ function cross(out, a, b) {
     out[2] = ax * by - ay * bx
     return out
 }
-},{}],41:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 module.exports = dot;
 
 /**
@@ -6977,7 +7374,7 @@ module.exports = dot;
 function dot(a, b) {
     return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
 }
-},{}],42:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 module.exports = length;
 
 /**
@@ -6992,7 +7389,7 @@ function length(a) {
         z = a[2]
     return Math.sqrt(x*x + y*y + z*z)
 }
-},{}],43:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 module.exports = lerp;
 
 /**
@@ -7013,7 +7410,7 @@ function lerp(out, a, b, t) {
     out[2] = az + t * (b[2] - az)
     return out
 }
-},{}],44:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 module.exports = normalize;
 
 /**
@@ -7037,7 +7434,24 @@ function normalize(out, a) {
     }
     return out
 }
-},{}],45:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
+(function (global){
+var win;
+
+if (typeof window !== "undefined") {
+    win = window;
+} else if (typeof global !== "undefined") {
+    win = global;
+} else if (typeof self !== "undefined"){
+    win = self;
+} else {
+    win = {};
+}
+
+module.exports = win;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],50:[function(require,module,exports){
 module.exports = function(strings) {
   if (typeof strings === 'string') strings = [strings]
   var exprs = [].slice.call(arguments,1)
@@ -7049,7 +7463,36 @@ module.exports = function(strings) {
   return parts.join('')
 }
 
-},{}],46:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
+module.exports = isNode
+
+function isNode (val) {
+  return (!val || typeof val !== 'object')
+    ? false
+    : (typeof window === 'object' && typeof window.Node === 'object')
+      ? (val instanceof window.Node)
+      : (typeof val.nodeType === 'number') &&
+        (typeof val.nodeName === 'string')
+}
+
+},{}],52:[function(require,module,exports){
+module.exports = isFunction
+
+var toString = Object.prototype.toString
+
+function isFunction (fn) {
+  var string = toString.call(fn)
+  return string === '[object Function]' ||
+    (typeof fn === 'function' && string !== '[object RegExp]') ||
+    (typeof window !== 'undefined' &&
+     // IE8 and below
+     (fn === window.setTimeout ||
+      fn === window.alert ||
+      fn === window.confirm ||
+      fn === window.prompt))
+};
+
+},{}],53:[function(require,module,exports){
 /*jshint unused:true*/
 /*
 Input:  matrix      ; a 4x4 matrix
@@ -7229,7 +7672,7 @@ function combine(out, a, b, scale1, scale2) {
     out[1] = a[1] * scale1 + b[1] * scale2
     out[2] = a[2] * scale1 + b[2] * scale2
 }
-},{"./normalize":47,"gl-mat4/clone":16,"gl-mat4/create":18,"gl-mat4/determinant":19,"gl-mat4/invert":25,"gl-mat4/transpose":38,"gl-vec3/cross":40,"gl-vec3/dot":41,"gl-vec3/length":42,"gl-vec3/normalize":44}],47:[function(require,module,exports){
+},{"./normalize":54,"gl-mat4/clone":20,"gl-mat4/create":22,"gl-mat4/determinant":23,"gl-mat4/invert":29,"gl-mat4/transpose":42,"gl-vec3/cross":44,"gl-vec3/dot":45,"gl-vec3/length":46,"gl-vec3/normalize":48}],54:[function(require,module,exports){
 module.exports = function normalize(out, mat) {
     var m44 = mat[15]
     // Cannot normalize.
@@ -7240,7 +7683,7 @@ module.exports = function normalize(out, mat) {
         out[i] = mat[i] * scale
     return true
 }
-},{}],48:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 var lerp = require('gl-vec3/lerp')
 
 var recompose = require('mat4-recompose')
@@ -7293,7 +7736,7 @@ function vec3(n) {
 function vec4() {
     return [0,0,0,1]
 }
-},{"gl-mat4/determinant":19,"gl-vec3/lerp":43,"mat4-decompose":46,"mat4-recompose":49,"quat-slerp":60}],49:[function(require,module,exports){
+},{"gl-mat4/determinant":23,"gl-vec3/lerp":47,"mat4-decompose":53,"mat4-recompose":56,"quat-slerp":70}],56:[function(require,module,exports){
 /*
 Input:  translation ; a 3 component vector
         scale       ; a 3 component vector
@@ -7354,7 +7797,7 @@ module.exports = function recomposeMat4(matrix, translation, scale, skew, perspe
     mat4.scale(matrix, matrix, scale)
     return matrix
 }
-},{"gl-mat4/create":18,"gl-mat4/fromRotationTranslation":21,"gl-mat4/identity":23,"gl-mat4/multiply":27,"gl-mat4/scale":35,"gl-mat4/translate":37}],50:[function(require,module,exports){
+},{"gl-mat4/create":22,"gl-mat4/fromRotationTranslation":25,"gl-mat4/identity":27,"gl-mat4/multiply":31,"gl-mat4/scale":39,"gl-mat4/translate":41}],57:[function(require,module,exports){
 'use strict'
 
 var bsearch   = require('binary-search-bounds')
@@ -7554,7 +7997,7 @@ function createMatrixCameraController(options) {
   return new MatrixCameraController(matrix)
 }
 
-},{"binary-search-bounds":5,"gl-mat4/invert":25,"gl-mat4/lookAt":26,"gl-mat4/rotateX":32,"gl-mat4/rotateY":33,"gl-mat4/rotateZ":34,"gl-mat4/scale":35,"gl-mat4/translate":37,"gl-vec3/normalize":44,"mat4-interpolate":48}],51:[function(require,module,exports){
+},{"binary-search-bounds":5,"gl-mat4/invert":29,"gl-mat4/lookAt":30,"gl-mat4/rotateX":36,"gl-mat4/rotateY":37,"gl-mat4/rotateZ":38,"gl-mat4/scale":39,"gl-mat4/translate":41,"gl-vec3/normalize":48,"mat4-interpolate":55}],58:[function(require,module,exports){
 'use strict'
 
 module.exports = mouseListen
@@ -7761,7 +8204,7 @@ function mouseListen (element, callback) {
   return result
 }
 
-},{"mouse-event":53}],52:[function(require,module,exports){
+},{"mouse-event":60}],59:[function(require,module,exports){
 var rootPosition = { left: 0, top: 0 }
 
 module.exports = mouseEventOffset
@@ -7788,7 +8231,7 @@ function getBoundingClientOffset (element) {
   }
 }
 
-},{}],53:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 'use strict'
 
 function mouseButtons(ev) {
@@ -7850,7 +8293,7 @@ function mouseRelativeY(ev) {
 }
 exports.y = mouseRelativeY
 
-},{}],54:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 'use strict'
 
 var toPX = require('to-px')
@@ -7892,7 +8335,7 @@ function mouseWheelListen(element, callback, noScroll) {
   return listener
 }
 
-},{"to-px":67}],55:[function(require,module,exports){
+},{"to-px":78}],62:[function(require,module,exports){
 module.exports = newArray
 
 function newArray (n, value) {
@@ -7904,7 +8347,99 @@ function newArray (n, value) {
   return array
 }
 
-},{}],56:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+
+'use strict';
+/* eslint-disable no-unused-vars */
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+function toObject(val) {
+	if (val === null || val === undefined) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
+
+	return Object(val);
+}
+
+function shouldUseNative() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
+
+		// Detect buggy property enumeration order in older V8 versions.
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
+
+		return true;
+	} catch (err) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
+
+module.exports = shouldUseNative() ? Object.assign : function (target, source) {
+	var from;
+	var to = toObject(target);
+	var symbols;
+
+	for (var s = 1; s < arguments.length; s++) {
+		from = Object(arguments[s]);
+
+		for (var key in from) {
+			if (hasOwnProperty.call(from, key)) {
+				to[key] = from[key];
+			}
+		}
+
+		if (getOwnPropertySymbols) {
+			symbols = getOwnPropertySymbols(from);
+			for (var i = 0; i < symbols.length; i++) {
+				if (propIsEnumerable.call(from, symbols[i])) {
+					to[symbols[i]] = from[symbols[i]];
+				}
+			}
+		}
+	}
+
+	return to;
+};
+
+},{}],64:[function(require,module,exports){
 'use strict'
 
 module.exports = quatFromFrame
@@ -7946,7 +8481,7 @@ function quatFromFrame(
   }
   return out
 }
-},{}],57:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 'use strict'
 
 module.exports = createOrbitController
@@ -8340,7 +8875,39 @@ function createOrbitController(options) {
 
   return result
 }
-},{"./lib/quatFromFrame":56,"filtered-vector":14,"gl-mat4/fromQuat":20,"gl-mat4/invert":25,"gl-mat4/lookAt":26}],58:[function(require,module,exports){
+},{"./lib/quatFromFrame":64,"filtered-vector":17,"gl-mat4/fromQuat":24,"gl-mat4/invert":29,"gl-mat4/lookAt":30}],66:[function(require,module,exports){
+var trim = require('trim')
+  , forEach = require('for-each')
+  , isArray = function(arg) {
+      return Object.prototype.toString.call(arg) === '[object Array]';
+    }
+
+module.exports = function (headers) {
+  if (!headers)
+    return {}
+
+  var result = {}
+
+  forEach(
+      trim(headers).split('\n')
+    , function (row) {
+        var index = row.indexOf(':')
+          , key = trim(row.slice(0, index)).toLowerCase()
+          , value = trim(row.slice(index + 1))
+
+        if (typeof(result[key]) === 'undefined') {
+          result[key] = value
+        } else if (isArray(result[key])) {
+          result[key].push(value)
+        } else {
+          result[key] = [ result[key], value ]
+        }
+      }
+  )
+
+  return result
+}
+},{"for-each":18,"trim":80}],67:[function(require,module,exports){
 module.exports = function parseUnit(str, out) {
     if (!out)
         out = [ 0, '' ]
@@ -8351,7 +8918,7 @@ module.exports = function parseUnit(str, out) {
     out[1] = str.match(/[\d.\-\+]*\s*(.*)/)[1] || ''
     return out
 }
-},{}],59:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 var div = null
 var prefixes = [ 'Webkit', 'Moz', 'O', 'ms' ]
 
@@ -8383,9 +8950,195 @@ module.exports = function prefixStyle (prop) {
   return false
 }
 
-},{}],60:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],70:[function(require,module,exports){
 module.exports = require('gl-quat/slerp')
-},{"gl-quat/slerp":39}],61:[function(require,module,exports){
+},{"gl-quat/slerp":43}],71:[function(require,module,exports){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -17890,7 +18643,7 @@ return wrapREGL;
 })));
 
 
-},{}],62:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 (function (global){
 module.exports =
   global.performance &&
@@ -17901,7 +18654,7 @@ module.exports =
   }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],63:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 'use strict';
 
 /**
@@ -17985,7 +18738,64 @@ shuffle.pick = function(arr, options) {
  */
 module.exports = shuffle;
 
-},{}],64:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
+var isDom = require('is-dom')
+var lookup = require('browser-media-mime-type')
+
+module.exports.video = simpleMediaElement.bind(null, 'video')
+module.exports.audio = simpleMediaElement.bind(null, 'audio')
+
+function simpleMediaElement (elementName, sources, opt) {
+  opt = opt || {}
+
+  if (!Array.isArray(sources)) {
+    sources = [ sources ]
+  }
+
+  var media = opt.element || document.createElement(elementName)
+
+  if (opt.loop) media.setAttribute('loop', 'loop')
+  if (opt.muted) media.setAttribute('muted', 'muted')
+  if (opt.autoplay) media.setAttribute('autoplay', 'autoplay')
+  if (opt.controls) media.setAttribute('controls', 'controls')
+  if (opt.crossOrigin) media.setAttribute('crossorigin', opt.crossOrigin)
+  if (opt.preload) media.setAttribute('preload', opt.preload)
+  if (opt.poster) media.setAttribute('poster', opt.poster)
+  if (typeof opt.volume !== 'undefined') media.setAttribute('volume', opt.volume)
+
+  sources = sources.filter(Boolean)
+  sources.forEach(function (source) {
+    media.appendChild(createSourceElement(source))
+  })
+
+  return media
+}
+
+function createSourceElement (data) {
+  if (isDom(data)) return data
+  if (typeof data === 'string') {
+    data = { src: data }
+    if (data.src) {
+      var ext = extension(data.src)
+      if (ext) data.type = lookup(ext)
+    }
+  }
+
+  var source = document.createElement('source')
+  if (data.src) source.setAttribute('src', data.src)
+  if (data.type) source.setAttribute('type', data.type)
+  return source
+}
+
+function extension (data) {
+  var extIdx = data.lastIndexOf('.')
+  if (extIdx <= 0 || extIdx === data.length - 1) {
+    return null
+  }
+  return data.substring(extIdx + 1)
+}
+
+},{"browser-media-mime-type":6,"is-dom":51}],75:[function(require,module,exports){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -18057,7 +18867,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
 
-},{}],65:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 
 var space = require('to-space-case')
 
@@ -18080,7 +18890,7 @@ function toCamelCase(string) {
   })
 }
 
-},{"to-space-case":68}],66:[function(require,module,exports){
+},{"to-space-case":79}],77:[function(require,module,exports){
 
 /**
  * Export.
@@ -18149,7 +18959,7 @@ function uncamelize(string) {
   })
 }
 
-},{}],67:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 'use strict'
 
 var parseUnit = require('parse-unit')
@@ -18210,7 +19020,7 @@ function toPX(str, element) {
   }
   return 1
 }
-},{"parse-unit":58}],68:[function(require,module,exports){
+},{"parse-unit":67}],79:[function(require,module,exports){
 
 var clean = require('to-no-case')
 
@@ -18233,7 +19043,23 @@ function toSpaceCase(string) {
   }).trim()
 }
 
-},{"to-no-case":66}],69:[function(require,module,exports){
+},{"to-no-case":77}],80:[function(require,module,exports){
+
+exports = module.exports = trim;
+
+function trim(str){
+  return str.replace(/^\s*|\s*$/g, '');
+}
+
+exports.left = function(str){
+  return str.replace(/^\s*/, '');
+};
+
+exports.right = function(str){
+  return str.replace(/\s*$/, '');
+};
+
+},{}],81:[function(require,module,exports){
 'use strict'
 
 module.exports = createTurntableController
@@ -18806,7 +19632,7 @@ function createTurntableController(options) {
     theta,
     phi)
 }
-},{"filtered-vector":14,"gl-mat4/invert":25,"gl-mat4/rotate":31,"gl-vec3/cross":40,"gl-vec3/dot":41,"gl-vec3/normalize":44}],70:[function(require,module,exports){
+},{"filtered-vector":17,"gl-mat4/invert":29,"gl-mat4/rotate":35,"gl-vec3/cross":44,"gl-vec3/dot":45,"gl-vec3/normalize":48}],82:[function(require,module,exports){
 var AudioContext = window.AudioContext || window.webkitAudioContext
 
 module.exports = WebAudioAnalyser
@@ -18886,7 +19712,805 @@ WebAudioAnalyser.prototype.frequencies = function(output, channel) {
   return output
 }
 
-},{}],71:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
+var buffer = require('./lib/buffer-source')
+var media = require('./lib/media-source')
+
+module.exports = webAudioPlayer
+function webAudioPlayer (src, opt) {
+  if (!src) throw new TypeError('must specify a src parameter')
+  opt = opt || {}
+  if (opt.buffer) return buffer(src, opt)
+  else return media(src, opt)
+}
+
+},{"./lib/buffer-source":85,"./lib/media-source":88}],84:[function(require,module,exports){
+module.exports = createAudioContext
+function createAudioContext () {
+  var AudioCtor = window.AudioContext || window.webkitAudioContext
+  return new AudioCtor()
+}
+
+},{}],85:[function(require,module,exports){
+(function (process){
+var canPlaySrc = require('./can-play-src')
+var createAudioContext = require('./audio-context')
+var xhrAudio = require('./xhr-audio')
+var EventEmitter = require('events').EventEmitter
+var rightNow = require('right-now')
+var resume = require('./resume-context')
+
+module.exports = createBufferSource
+function createBufferSource (src, opt) {
+  opt = opt || {}
+  var emitter = new EventEmitter()
+  var audioContext = opt.context || createAudioContext()
+
+  // a pass-through node so user just needs to
+  // connect() once
+  var bufferNode, buffer, duration
+  var node = audioContext.createGain()
+  var audioStartTime = null
+  var audioPauseTime = null
+  var audioCurrentTime = 0
+  var playing = false
+  var loop = opt.loop
+
+  emitter.play = function () {
+    if (playing) return
+    playing = true
+
+    if (opt.autoResume !== false) resume(emitter.context)
+    disposeBuffer()
+    bufferNode = audioContext.createBufferSource()
+    bufferNode.connect(emitter.node)
+    bufferNode.onended = ended
+    if (buffer) {
+      // Might be null undefined if we are still loading
+      bufferNode.buffer = buffer
+    }
+    if (loop) {
+      bufferNode.loop = true
+      if (typeof opt.loopStart === 'number') bufferNode.loopStart = opt.loopStart
+      if (typeof opt.loopEnd === 'number') bufferNode.loopEnd = opt.loopEnd
+    }
+
+    if (duration && audioCurrentTime > duration) {
+      // for when it loops...
+      audioCurrentTime = audioCurrentTime % duration
+    }
+    var nextTime = audioCurrentTime
+
+    bufferNode.start(0, nextTime)
+    audioStartTime = rightNow()
+  }
+
+  emitter.pause = function () {
+    if (!playing) return
+    playing = false
+    // Don't let the "end" event
+    // get triggered on manual pause.
+    bufferNode.onended = null
+    bufferNode.stop(0)
+    audioPauseTime = rightNow()
+    audioCurrentTime += (audioPauseTime - audioStartTime) / 1000
+  }
+
+  emitter.stop = function () {
+    emitter.pause()
+    ended()
+  }
+
+  emitter.dispose = function () {
+    disposeBuffer()
+    buffer = null
+  }
+
+  emitter.node = node
+  emitter.context = audioContext
+
+  Object.defineProperties(emitter, {
+    duration: {
+      enumerable: true, configurable: true,
+      get: function () {
+        return duration
+      }
+    },
+    playing: {
+      enumerable: true, configurable: true,
+      get: function () {
+        return playing
+      }
+    },
+    buffer: {
+      enumerable: true, configurable: true,
+      get: function () {
+        return buffer
+      }
+    },
+    volume: {
+      enumerable: true, configurable: true,
+      get: function () {
+        return node.gain.value
+      },
+      set: function (n) {
+        node.gain.value = n
+      }
+    }
+  })
+
+  // set initial volume
+  if (typeof opt.volume === 'number') {
+    emitter.volume = opt.volume
+  }
+
+  // filter down to a list of playable sources
+  var sources = Array.isArray(src) ? src : [ src ]
+  sources = sources.filter(Boolean)
+  var playable = sources.some(canPlaySrc)
+  if (playable) {
+    var source = sources.filter(canPlaySrc)[0]
+    // Support the same source types as in
+    // MediaElement mode...
+    if (typeof source.getAttribute === 'function') {
+      source = source.getAttribute('src')
+    } else if (typeof source.src === 'string') {
+      source = source.src
+    }
+    // We have at least one playable source.
+    // For now just play the first,
+    // ideally this module could attempt each one.
+    startLoad(source)
+  } else {
+    // no sources can be played...
+    process.nextTick(function () {
+      emitter.emit('error', canPlaySrc.createError(sources))
+    })
+  }
+  return emitter
+
+  function startLoad (src) {
+    xhrAudio(audioContext, src, function audioDecoded (err, decoded) {
+      if (err) return emitter.emit('error', err)
+      buffer = decoded // store for later use
+      if (bufferNode) {
+        // if play() was called early
+        bufferNode.buffer = buffer
+      }
+      duration = buffer.duration
+      node.buffer = buffer
+      emitter.emit('load')
+    }, function audioProgress (amount, total) {
+      emitter.emit('progress', amount, total)
+    }, function audioDecoding () {
+      emitter.emit('decoding')
+    })
+  }
+
+  function ended () {
+    emitter.emit('end')
+    playing = false
+    audioCurrentTime = 0
+  }
+
+  function disposeBuffer () {
+    if (bufferNode) bufferNode.disconnect()
+  }
+}
+
+}).call(this,require('_process'))
+},{"./audio-context":84,"./can-play-src":86,"./resume-context":89,"./xhr-audio":90,"_process":69,"events":16,"right-now":72}],86:[function(require,module,exports){
+var lookup = require('browser-media-mime-type')
+var audio
+
+module.exports = isSrcPlayable
+function isSrcPlayable (src) {
+  if (!src) throw new TypeError('src cannot be empty')
+  var type
+  if (typeof src.getAttribute === 'function') {
+    // <source> element
+    type = src.getAttribute('type')
+  } else if (typeof src === 'string') {
+    // 'foo.mp3' string
+    var ext = extension(src)
+    if (ext) type = lookup(ext)
+  } else {
+    // { src: 'foo.mp3', type: 'audio/mpeg; codecs..'}
+    type = src.type
+  }
+
+  // We have an unknown file extension or
+  // a <source> tag without an explicit type,
+  // just let the browser handle it!
+  if (!type) return true
+
+  // handle "no" edge case with super legacy browsers...
+  // https://groups.google.com/forum/#!topic/google-web-toolkit-contributors/a8Uy0bXq1Ho
+  if (!audio) audio = new window.Audio()
+  var canplay = audio.canPlayType(type).replace(/no/, '')
+  return Boolean(canplay)
+}
+
+module.exports.createError = createError
+function createError (sources) {
+  // All sources are unplayable
+  var err = new Error('This browser does not support any of the following sources:\n    ' +
+      sources.join(', ') + '\n' +
+      'Try using an array of OGG, MP3 and WAV.')
+  err.type = 'AUDIO_FORMAT'
+  return err
+}
+
+function extension (data) {
+  var extIdx = data.lastIndexOf('.')
+  if (extIdx <= 0 || extIdx === data.length - 1) {
+    return undefined
+  }
+  return data.substring(extIdx + 1)
+}
+
+},{"browser-media-mime-type":6}],87:[function(require,module,exports){
+module.exports = addOnce
+function addOnce (element, event, fn) {
+  function tmp (ev) {
+    element.removeEventListener(event, tmp, false)
+    fn(ev, element)
+  }
+  element.addEventListener(event, tmp, false)
+}
+},{}],88:[function(require,module,exports){
+(function (process){
+var EventEmitter = require('events').EventEmitter
+var createAudio = require('simple-media-element').audio
+var assign = require('object-assign')
+
+var resume = require('./resume-context')
+var createAudioContext = require('./audio-context')
+var canPlaySrc = require('./can-play-src')
+var addOnce = require('./event-add-once')
+
+module.exports = createMediaSource
+function createMediaSource (src, opt) {
+  opt = assign({}, opt)
+  var emitter = new EventEmitter()
+
+  // Default to Audio instead of HTMLAudioElement
+  // There is not much difference except in the following:
+  //    x instanceof Audio
+  //    x instanceof HTMLAudioElement
+  // And in my experience Audio has better support on various
+  // platforms like CocoonJS.
+  // Please open an issue if there is a concern with this.
+  if (!opt.element) opt.element = new window.Audio()
+
+  var desiredVolume = opt.volume
+  delete opt.volume // make sure <audio> tag receives full volume
+  var audio = createAudio(src, opt)
+  var audioContext = opt.context || createAudioContext()
+  var node = audioContext.createGain()
+  var mediaNode = audioContext.createMediaElementSource(audio)
+  mediaNode.connect(node)
+
+  audio.addEventListener('ended', function () {
+    emitter.emit('end')
+  })
+
+  var loopStart = opt.loopStart
+  var loopEnd = opt.loopEnd
+  var hasLoopStart = typeof loopStart === 'number' && isFinite(loopStart)
+  var hasLoopEnd = typeof loopEnd === 'number' && isFinite(loopEnd)
+  var isLoopReady = false
+  if (hasLoopStart || hasLoopEnd) {
+    window.requestAnimationFrame(function update () {
+      // audio hasn't been loaded yet...
+      if (typeof audio.duration !== 'number') return
+      var currentTime = audio.currentTime
+
+      // where to end the buffer
+      var endTime = hasLoopEnd ? Math.min(audio.duration, loopEnd) : audio.duration
+
+      if (currentTime > (loopStart || 0)) {
+        isLoopReady = true
+      }
+
+      // jump ahead to loop start point
+      if (hasLoopStart && isLoopReady && currentTime < loopStart) {
+        audio.currentTime = loopStart
+      }
+
+      // if we've hit the end of the buffer
+      if (currentTime >= endTime) {
+        // if there is no loop end point, let native looping take over
+        // if we have a loop end point, jump back to start point or zero
+        if (hasLoopEnd) {
+          audio.currentTime = hasLoopStart ? loopStart : 0
+        }
+      }
+      window.requestAnimationFrame(update)
+    });
+  }
+
+  emitter.element = audio
+  emitter.context = audioContext
+  emitter.node = node
+  emitter.pause = audio.pause.bind(audio)
+  emitter.play = function () {
+    if (opt.autoResume !== false) resume(emitter.context)
+    return audio.play()
+  }
+
+  // This exists currently for parity with Buffer source
+  // Open to suggestions for what this should dispose...
+  emitter.dispose = function () {}
+
+  emitter.stop = function () {
+    var wasPlaying = emitter.playing
+    audio.pause()
+    audio.currentTime = 0
+    isLoopReady = false
+    if (wasPlaying) {
+      emitter.emit('end')
+    }
+  }
+
+  Object.defineProperties(emitter, {
+    duration: {
+      enumerable: true, configurable: true,
+      get: function () {
+        return audio.duration
+      }
+    },
+    currentTime: {
+      enumerable: true, configurable: true,
+      get: function () {
+        return audio.currentTime
+      }
+    },
+    playing: {
+      enumerable: true, configurable: true,
+      get: function () {
+        return !audio.paused
+      }
+    },
+    volume: {
+      enumerable: true, configurable: true,
+      get: function () {
+        return node.gain.value
+      },
+      set: function (n) {
+        node.gain.value = n
+      }
+    }
+  })
+
+  // Set initial volume
+  if (typeof desiredVolume === 'number') {
+    emitter.volume = desiredVolume
+  }
+
+  // Check if all sources are unplayable,
+  // if so we emit an error since the browser
+  // might not.
+  var sources = Array.isArray(src) ? src : [ src ]
+  sources = sources.filter(Boolean)
+  var playable = sources.some(canPlaySrc)
+  if (playable) {
+    // At least one source is probably/maybe playable
+    startLoad()
+  } else {
+    // emit error on next tick so user can catch it
+    process.nextTick(function () {
+      emitter.emit('error', canPlaySrc.createError(sources))
+    })
+  }
+
+  return emitter
+
+  function startLoad () {
+    // The file errors (like decoding / 404s) appear on <source>
+    var srcElements = Array.prototype.slice.call(audio.children)
+    var remainingSrcErrors = srcElements.length
+    var hasErrored = false
+    var sourceError = function (err, el) {
+      if (hasErrored) return
+      remainingSrcErrors--
+      console.warn('Error loading source: ' + el.getAttribute('src'))
+      if (remainingSrcErrors <= 0) {
+        hasErrored = true
+        srcElements.forEach(function (el) {
+          el.removeEventListener('error', sourceError, false)
+        })
+        emitter.emit('error', new Error('Could not play any of the supplied sources'))
+      }
+    }
+
+    var done = function () {
+      emitter.emit('load')
+    }
+
+    if (audio.readyState >= audio.HAVE_ENOUGH_DATA) {
+      process.nextTick(done)
+    } else {
+      addOnce(audio, 'canplay', done)
+      addOnce(audio, 'error', function (ev) {
+        emitter.emit(new Error('Unknown error while loading <audio>'))
+      })
+      srcElements.forEach(function (el) {
+        addOnce(el, 'error', sourceError)
+      })
+    }
+
+    // On most browsers the loading begins
+    // immediately. However, on iOS 9.2 Safari,
+    // you need to call load() for events
+    // to be triggered.
+    audio.load()
+  }
+}
+
+}).call(this,require('_process'))
+},{"./audio-context":84,"./can-play-src":86,"./event-add-once":87,"./resume-context":89,"_process":69,"events":16,"object-assign":63,"simple-media-element":74}],89:[function(require,module,exports){
+module.exports = function (audioContext) {
+  if (audioContext.state === 'suspended' &&
+      typeof audioContext.resume === 'function') {
+    audioContext.resume()
+  }
+}
+
+},{}],90:[function(require,module,exports){
+var xhr = require('xhr')
+var xhrProgress = require('xhr-progress')
+
+module.exports = xhrAudio
+function xhrAudio (audioContext, src, cb, progress, decoding) {
+  var xhrObject = xhr({
+    uri: src,
+    responseType: 'arraybuffer'
+  }, function (err, resp, arrayBuf) {
+    if (!/^2/.test(resp.statusCode)) {
+      err = new Error('status code ' + resp.statusCode + ' requesting ' + src)
+    }
+    if (err) return cb(err)
+    decode(arrayBuf)
+  })
+
+  xhrProgress(xhrObject)
+    .on('data', function (amount, total) {
+      progress(amount, total)
+    })
+
+  function decode (arrayBuf) {
+    decoding()
+    audioContext.decodeAudioData(arrayBuf, function (decoded) {
+      cb(null, decoded)
+    }, function () {
+      var err = new Error('Error decoding audio data')
+      err.type = 'DECODE_AUDIO_DATA'
+      cb(err)
+    })
+  }
+}
+
+},{"xhr":92,"xhr-progress":91}],91:[function(require,module,exports){
+var EventEmitter = require('events').EventEmitter
+
+module.exports = progress
+
+function progress(xhr) {
+  var emitter = new EventEmitter
+  var finished = false
+
+  if (xhr.attachEvent) {
+    xhr.attachEvent('onreadystatechange', done)
+    return emitter
+  }
+
+  xhr.addEventListener('load', done, false)
+  xhr.addEventListener('progress', progress, false)
+  function progress(event) {
+    var value = event.lengthComputable
+      ? event.loaded / event.total
+      : 0
+
+    if (!finished) emitter.emit('data'
+      , value
+      , event.total || null
+    )
+
+    finished = value === 1
+  }
+
+  function done(event) {
+    if (event.type !== 'load' && !/^(ready|complete)$/g.test(
+      (event.currentTarget || event.srcElement).readyState
+    )) return
+
+    if (finished) return
+    if (xhr.removeEventListener) {
+      xhr.removeEventListener('load', done, false)
+      xhr.removeEventListener('progress', progress, false)
+    } else
+    if (xhr.detatchEvent) {
+      xhr.detatchEvent('onreadystatechange', done)
+    }
+
+    emitter.emit('data', 1, event.total || null)
+    emitter.emit('done')
+    finished = true
+  }
+
+  return emitter
+}
+
+},{"events":16}],92:[function(require,module,exports){
+"use strict";
+var window = require("global/window")
+var isFunction = require("is-function")
+var parseHeaders = require("parse-headers")
+var xtend = require("xtend")
+
+module.exports = createXHR
+createXHR.XMLHttpRequest = window.XMLHttpRequest || noop
+createXHR.XDomainRequest = "withCredentials" in (new createXHR.XMLHttpRequest()) ? createXHR.XMLHttpRequest : window.XDomainRequest
+
+forEachArray(["get", "put", "post", "patch", "head", "delete"], function(method) {
+    createXHR[method === "delete" ? "del" : method] = function(uri, options, callback) {
+        options = initParams(uri, options, callback)
+        options.method = method.toUpperCase()
+        return _createXHR(options)
+    }
+})
+
+function forEachArray(array, iterator) {
+    for (var i = 0; i < array.length; i++) {
+        iterator(array[i])
+    }
+}
+
+function isEmpty(obj){
+    for(var i in obj){
+        if(obj.hasOwnProperty(i)) return false
+    }
+    return true
+}
+
+function initParams(uri, options, callback) {
+    var params = uri
+
+    if (isFunction(options)) {
+        callback = options
+        if (typeof uri === "string") {
+            params = {uri:uri}
+        }
+    } else {
+        params = xtend(options, {uri: uri})
+    }
+
+    params.callback = callback
+    return params
+}
+
+function createXHR(uri, options, callback) {
+    options = initParams(uri, options, callback)
+    return _createXHR(options)
+}
+
+function _createXHR(options) {
+    if(typeof options.callback === "undefined"){
+        throw new Error("callback argument missing")
+    }
+
+    var called = false
+    var callback = function cbOnce(err, response, body){
+        if(!called){
+            called = true
+            options.callback(err, response, body)
+        }
+    }
+
+    function readystatechange() {
+        if (xhr.readyState === 4) {
+            setTimeout(loadFunc, 0)
+        }
+    }
+
+    function getBody() {
+        // Chrome with requestType=blob throws errors arround when even testing access to responseText
+        var body = undefined
+
+        if (xhr.response) {
+            body = xhr.response
+        } else {
+            body = xhr.responseText || getXml(xhr)
+        }
+
+        if (isJson) {
+            try {
+                body = JSON.parse(body)
+            } catch (e) {}
+        }
+
+        return body
+    }
+
+    function errorFunc(evt) {
+        clearTimeout(timeoutTimer)
+        if(!(evt instanceof Error)){
+            evt = new Error("" + (evt || "Unknown XMLHttpRequest Error") )
+        }
+        evt.statusCode = 0
+        return callback(evt, failureResponse)
+    }
+
+    // will load the data & process the response in a special response object
+    function loadFunc() {
+        if (aborted) return
+        var status
+        clearTimeout(timeoutTimer)
+        if(options.useXDR && xhr.status===undefined) {
+            //IE8 CORS GET successful response doesn't have a status field, but body is fine
+            status = 200
+        } else {
+            status = (xhr.status === 1223 ? 204 : xhr.status)
+        }
+        var response = failureResponse
+        var err = null
+
+        if (status !== 0){
+            response = {
+                body: getBody(),
+                statusCode: status,
+                method: method,
+                headers: {},
+                url: uri,
+                rawRequest: xhr
+            }
+            if(xhr.getAllResponseHeaders){ //remember xhr can in fact be XDR for CORS in IE
+                response.headers = parseHeaders(xhr.getAllResponseHeaders())
+            }
+        } else {
+            err = new Error("Internal XMLHttpRequest Error")
+        }
+        return callback(err, response, response.body)
+    }
+
+    var xhr = options.xhr || null
+
+    if (!xhr) {
+        if (options.cors || options.useXDR) {
+            xhr = new createXHR.XDomainRequest()
+        }else{
+            xhr = new createXHR.XMLHttpRequest()
+        }
+    }
+
+    var key
+    var aborted
+    var uri = xhr.url = options.uri || options.url
+    var method = xhr.method = options.method || "GET"
+    var body = options.body || options.data
+    var headers = xhr.headers = options.headers || {}
+    var sync = !!options.sync
+    var isJson = false
+    var timeoutTimer
+    var failureResponse = {
+        body: undefined,
+        headers: {},
+        statusCode: 0,
+        method: method,
+        url: uri,
+        rawRequest: xhr
+    }
+
+    if ("json" in options && options.json !== false) {
+        isJson = true
+        headers["accept"] || headers["Accept"] || (headers["Accept"] = "application/json") //Don't override existing accept header declared by user
+        if (method !== "GET" && method !== "HEAD") {
+            headers["content-type"] || headers["Content-Type"] || (headers["Content-Type"] = "application/json") //Don't override existing accept header declared by user
+            body = JSON.stringify(options.json === true ? body : options.json)
+        }
+    }
+
+    xhr.onreadystatechange = readystatechange
+    xhr.onload = loadFunc
+    xhr.onerror = errorFunc
+    // IE9 must have onprogress be set to a unique function.
+    xhr.onprogress = function () {
+        // IE must die
+    }
+    xhr.onabort = function(){
+        aborted = true;
+    }
+    xhr.ontimeout = errorFunc
+    xhr.open(method, uri, !sync, options.username, options.password)
+    //has to be after open
+    if(!sync) {
+        xhr.withCredentials = !!options.withCredentials
+    }
+    // Cannot set timeout with sync request
+    // not setting timeout on the xhr object, because of old webkits etc. not handling that correctly
+    // both npm's request and jquery 1.x use this kind of timeout, so this is being consistent
+    if (!sync && options.timeout > 0 ) {
+        timeoutTimer = setTimeout(function(){
+            if (aborted) return
+            aborted = true//IE9 may still call readystatechange
+            xhr.abort("timeout")
+            var e = new Error("XMLHttpRequest timeout")
+            e.code = "ETIMEDOUT"
+            errorFunc(e)
+        }, options.timeout )
+    }
+
+    if (xhr.setRequestHeader) {
+        for(key in headers){
+            if(headers.hasOwnProperty(key)){
+                xhr.setRequestHeader(key, headers[key])
+            }
+        }
+    } else if (options.headers && !isEmpty(options.headers)) {
+        throw new Error("Headers cannot be set on an XDomainRequest object")
+    }
+
+    if ("responseType" in options) {
+        xhr.responseType = options.responseType
+    }
+
+    if ("beforeSend" in options &&
+        typeof options.beforeSend === "function"
+    ) {
+        options.beforeSend(xhr)
+    }
+
+    // Microsoft Edge browser sends "undefined" when send is called with undefined value.
+    // XMLHttpRequest spec says to pass null as body to indicate no body
+    // See https://github.com/naugtur/xhr/issues/100.
+    xhr.send(body || null)
+
+    return xhr
+
+
+}
+
+function getXml(xhr) {
+    // xhr.responseXML will throw Exception "InvalidStateError" or "DOMException"
+    // See https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseXML.
+    try {
+        if (xhr.responseType === "document") {
+            return xhr.responseXML
+        }
+        var firefoxBugTakenEffect = xhr.responseXML && xhr.responseXML.documentElement.nodeName === "parsererror"
+        if (xhr.responseType === "" && !firefoxBugTakenEffect) {
+            return xhr.responseXML
+        }
+    } catch (e) {}
+
+    return null
+}
+
+function noop() {}
+
+},{"global/window":49,"is-function":52,"parse-headers":66,"xtend":93}],93:[function(require,module,exports){
+module.exports = extend
+
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+function extend() {
+    var target = {}
+
+    for (var i = 0; i < arguments.length; i++) {
+        var source = arguments[i]
+
+        for (var key in source) {
+            if (hasOwnProperty.call(source, key)) {
+                target[key] = source[key]
+            }
+        }
+    }
+
+    return target
+}
+
+},{}],94:[function(require,module,exports){
 const css = require('dom-css')
 
 module.exports = function createAudioControls (audio, tracks) {
@@ -18966,7 +20590,7 @@ function formatSeconds (seconds) {
   return `${minutes}:${seconds}`
 }
 
-},{"dom-css":12}],72:[function(require,module,exports){
+},{"dom-css":14}],95:[function(require,module,exports){
 const createCamera = require('3d-view-controls')
 
 module.exports = function createRoamingCamera (canvas, center, eye) {
@@ -19042,7 +20666,7 @@ module.exports = function createRoamingCamera (canvas, center, eye) {
   }
 }
 
-},{"3d-view-controls":1}],73:[function(require,module,exports){
+},{"3d-view-controls":1}],96:[function(require,module,exports){
 const createRegl = require('regl')
 const glsl = require('glslify')
 const mat4 = require('gl-mat4')
@@ -19054,6 +20678,7 @@ const shuffle = require('shuffle-array')
 const Alea = require('alea')
 const { createSpring } = require('spring-animator')
 const Delaunator = require('delaunator')
+const createPlayer = require('web-audio-player')
 const createAnalyser = require('web-audio-analyser')
 const createCamera = require('./camera')
 const createTitleCard = require('./title-card')
@@ -19065,7 +20690,11 @@ const createRenderGrid = require('./render-grid')
 const titleCard = createTitleCard()
 const canvas = document.querySelector('canvas.viz')
 const resize = fit(canvas)
-window.addEventListener('resize', () => { resize(); setup(); titleCard.resize() }, false)
+window.addEventListener('resize', () => {
+  resize()
+  if (hasSetUp) setup()
+  titleCard.resize()
+}, false)
 const camera = createCamera(canvas, [2.5, 2.5, 2.5], [0, 0, 0])
 const regl = createRegl(canvas)
 
@@ -19099,23 +20728,17 @@ const tracks = [
   {title: 'Adagio for Strings', artist: 'Samuel Barber', path: 'src/audio/adagio-for-strings.mp3'}
 ]
 
-const isIOS = /(iPhone|iPad)/i.test(navigator.userAgent)
-if (isIOS) {
-  const iOSInstructions = document.querySelector('.ios-instructions')
-  css(iOSInstructions, { display: 'block' })
-  document.querySelectorAll('canvas').forEach(el => el.remove())
-  throw new Error('IOS not supported')
-}
-
-setupAudio(tracks).then(([audioAnalyser, audio]) => {
-  const audioControls = createAudioControls(audio, tracks)
+const audio = createPlayer(tracks[0].path)
+audio.on('load', function () {
+  window.audio = audio
+  analyser = createAnalyser(audio.node, audio.context, { audible: true, stereo: false })
+  const audioControls = createAudioControls(audio.element, tracks)
 
   function loop () {
     window.requestAnimationFrame(loop)
     audioControls.tick()
   }
 
-  analyser = audioAnalyser
   analyser.analyser.fftSize = 1024 * 2
   analyser.analyser.minDecibels = -75
   analyser.analyser.maxDecibels = -30
@@ -19196,7 +20819,9 @@ gridGUI.add(settings, 'gridMaxHeight', 0.01, 0.8).step(0.01)
 // gui.add(settings, 'motionBlur')
 // gui.add(settings, 'motionBlurAmount', 0.01, 1).step(0.01)
 
+let hasSetUp = false
 function setup () {
+  hasSetUp = true
   const rand = new Alea(settings.seed)
   points = []
 
@@ -19384,23 +21009,7 @@ function startLoop () {
   })
 }
 
-// ///// helpers (to abstract down the line?) //////
-
-function setupAudio (tracks) {
-  return new Promise((resolve, reject) => {
-    const audio = new window.Audio()
-    audio.addEventListener('canplay', function onLoad () {
-      audio.removeEventListener('canplay', onLoad)
-      const analyser = createAnalyser(audio, { audible: true, stereo: false })
-      resolve([analyser, audio])
-    })
-
-    audio.crossOrigin = 'anonymous'
-    audio.src = tracks[0].path
-  })
-}
-
-},{"./audio-controls":71,"./camera":72,"./render-bloom":74,"./render-blur":75,"./render-grid":76,"./title-card":77,"alea":4,"canvas-fit":6,"dat-gui":8,"delaunator":11,"dom-css":12,"gl-mat4":24,"glslify":45,"new-array":55,"regl":61,"shuffle-array":63,"spring-animator":64,"web-audio-analyser":70}],74:[function(require,module,exports){
+},{"./audio-controls":94,"./camera":95,"./render-bloom":97,"./render-blur":98,"./render-grid":99,"./title-card":100,"alea":4,"canvas-fit":8,"dat-gui":10,"delaunator":13,"dom-css":14,"gl-mat4":28,"glslify":50,"new-array":62,"regl":71,"shuffle-array":73,"spring-animator":75,"web-audio-analyser":82,"web-audio-player":83}],97:[function(require,module,exports){
 const glsl = require('glslify')
 
 module.exports = function createRenderBloom (regl, canvas) {
@@ -19477,7 +21086,7 @@ module.exports = function createRenderBloom (regl, canvas) {
   }
 }
 
-},{"glslify":45}],75:[function(require,module,exports){
+},{"glslify":50}],98:[function(require,module,exports){
 const glsl = require('glslify')
 
 module.exports = function createRenderBlur (regl) {
@@ -19501,7 +21110,7 @@ module.exports = function createRenderBlur (regl) {
   })
 }
 
-},{"glslify":45}],76:[function(require,module,exports){
+},{"glslify":50}],99:[function(require,module,exports){
 const glsl = require('glslify')
 const { createSpring } = require('spring-animator')
 
@@ -19618,7 +21227,7 @@ module.exports = function createRenderGrid (regl, settings) {
   }
 }
 
-},{"glslify":45,"spring-animator":64}],77:[function(require,module,exports){
+},{"glslify":50,"spring-animator":75}],100:[function(require,module,exports){
 const fit = require('canvas-fit')
 const css = require('dom-css')
 const Alea = require('alea')
@@ -19862,4 +21471,4 @@ function printText (context, text, size) {
   context.fillText(text, context.canvas.width / 2, context.canvas.height / 3)
 }
 
-},{"alea":4,"canvas-fit":6,"dom-css":12,"spring-animator":64}]},{},[73]);
+},{"alea":4,"canvas-fit":8,"dom-css":14,"spring-animator":75}]},{},[96]);

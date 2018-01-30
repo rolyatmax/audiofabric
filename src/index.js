@@ -59,15 +59,10 @@ const tracks = [
   {title: 'Adagio for Strings', artist: 'Samuel Barber', path: 'src/audio/adagio-for-strings.mp3'}
 ]
 
-const isIOS = /(iPhone|iPad)/i.test(navigator.userAgent)
-if (isIOS) {
-  const iOSInstructions = document.querySelector('.ios-instructions')
-  css(iOSInstructions, { display: 'block' })
-  document.querySelectorAll('canvas').forEach(el => el.remove())
-  throw new Error('IOS not supported')
-}
-
-setupAudio(tracks).then(([audioAnalyser, audio]) => {
+const audio = createPlayer(tracks[0].path)
+audio.on('load', function () {
+  window.audio = audio
+  analyser = createAnalyser(audio.node, audio.context, { audible: true, stereo: false })
   const audioControls = createAudioControls(audio.element, tracks)
 
   function loop () {
@@ -75,7 +70,6 @@ setupAudio(tracks).then(([audioAnalyser, audio]) => {
     audioControls.tick()
   }
 
-  analyser = audioAnalyser
   analyser.analyser.fftSize = 1024 * 2
   analyser.analyser.minDecibels = -75
   analyser.analyser.maxDecibels = -30
@@ -371,32 +365,5 @@ function startLoop () {
       blurWeight: settings.blurWeight,
       originalWeight: settings.originalWeight
     })
-  })
-}
-
-// ///// helpers (to abstract down the line?) //////
-
-function setupAudio (tracks) {
-  return new Promise((resolve, reject) => {
-    const audio = createPlayer(tracks[0].path)
-    audio.on('load', function () {
-      // audio.node.connect(audio.context.destination)
-      const analyser = createAnalyser(audio.node, audio.context, { audible: true, stereo: false })
-      resolve([analyser, audio])
-    })
-    // const audio = new window.Audio()
-    window.audio = audio
-    // console.log('Loading Audio')
-    // audio.addEventListener('error', () => { console.log('Audio Error!') })
-    // audio.addEventListener('canplay', function onLoad () {
-    //   console.log('Audio Loaded!')
-    //   audio.removeEventListener('canplay', onLoad)
-    //   const analyser = null // createAnalyser(audio, { audible: true, stereo: false })
-    //   resolve([analyser, audio])
-    // })
-    //
-    // audio.crossOrigin = 'anonymous'
-    // audio.src = tracks[0].path
-    // audio.load()
   })
 }
