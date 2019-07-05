@@ -21,18 +21,29 @@ const createRenderGrid = require('./render-grid')
 const titleCard = createTitleCard()
 const canvas = document.querySelector('canvas.viz')
 const resize = fit(canvas)
-window.addEventListener('resize', () => {
-  resize()
-  if (hasSetUp) setup()
-  titleCard.resize()
-}, false)
+window.addEventListener(
+  'resize',
+  () => {
+    resize()
+    if (hasSetUp) setup()
+    titleCard.resize()
+  },
+  false
+)
 const camera = createCamera(canvas, [2.5, 2.5, 2.5], [0, 0, 0])
 const regl = createRegl(canvas)
 
-let analyser, delaunay, points, positions, positionsBuffer, renderFrequencies,
-  renderGrid, blurredFbo, renderToBlurredFBO
+let analyser,
+  delaunay,
+  points,
+  positions,
+  positionsBuffer,
+  renderFrequencies,
+  renderGrid,
+  blurredFbo,
+  renderToBlurredFBO
 
-const getFrameBuffer = (width, height) => (
+const getFrameBuffer = (width, height) =>
   regl.framebuffer({
     color: regl.texture({
       shape: [width, height, 4]
@@ -40,7 +51,6 @@ const getFrameBuffer = (width, height) => (
     depth: false,
     stencil: false
   })
-)
 
 const fbo = getFrameBuffer(512, 512)
 const freqMapFBO = getFrameBuffer(512, 512)
@@ -52,17 +62,45 @@ const renderBloom = createRenderBloom(regl, canvas)
 const renderBlur = createRenderBlur(regl)
 
 const tracks = [
-  {title: '715 - CRΣΣKS', artist: 'Bon Iver', path: 'src/audio/715-creeks.mp3'},
-  {title: 'Another New World', artist: 'Punch Brothers', path: 'src/audio/another-new-world.mp3'},
-  {title: 'The Wilder Sun', artist: 'Jon Hopkins', path: 'src/audio/the-wilder-sun.mp3'},
-  {title: 'Lost It To Trying', artist: 'Son Lux', path: 'src/audio/lost-it-to-trying.mp3'},
-  {title: 'Adagio for Strings', artist: 'Samuel Barber', path: 'src/audio/adagio-for-strings.mp3'}
+  {
+    title: '715 - CRΣΣKS',
+    artist: 'Bon Iver',
+    path: 'src/audio/715-creeks.mp3'
+  },
+  {
+    title: 'Another New World',
+    artist: 'Punch Brothers',
+    path: 'src/audio/another-new-world.mp3'
+  },
+  {
+    title: 'The Wilder Sun',
+    artist: 'Jon Hopkins',
+    path: 'src/audio/the-wilder-sun.mp3'
+  },
+  {
+    title: 'Lost It To Trying',
+    artist: 'Son Lux',
+    path: 'src/audio/lost-it-to-trying.mp3'
+  },
+  {
+    title: 'Adagio for Strings',
+    artist: 'Samuel Barber',
+    path: 'src/audio/adagio-for-strings.mp3'
+  },
+  {
+    title: 'friendship-era',
+    artist: "I'm singer",
+    path: 'src/audio/friendship-era.mp3'
+  }
 ]
 
 const audio = createPlayer(tracks[0].path)
 audio.on('load', function () {
   window.audio = audio
-  analyser = createAnalyser(audio.node, audio.context, { audible: true, stereo: false })
+  analyser = createAnalyser(audio.node, audio.context, {
+    audible: true,
+    stereo: false
+  })
   const audioControls = createAudioControls(audio.element, tracks)
 
   function loop () {
@@ -83,7 +121,8 @@ audio.on('load', function () {
   const renderLoop = startLoop()
   setTimeout(renderLoop.cancel.bind(renderLoop), 1000)
 
-  titleCard.show()
+  titleCard
+    .show()
     .then(() => new Promise(resolve => setTimeout(resolve, 1000)))
     .then(() => {
       css(audioControls.el, {
@@ -135,16 +174,28 @@ css(gui.domElement.parentElement, {
   opacity: 0
 })
 const fabricGUI = gui.addFolder('fabric')
-fabricGUI.add(settings, 'dampening', 0.01, 1).step(0.01).onChange(setup)
-fabricGUI.add(settings, 'stiffness', 0.01, 1).step(0.01).onChange(setup)
-fabricGUI.add(settings, 'connectedNeighbors', 0, 7).step(1).onChange(setup)
+fabricGUI
+  .add(settings, 'dampening', 0.01, 1)
+  .step(0.01)
+  .onChange(setup)
+fabricGUI
+  .add(settings, 'stiffness', 0.01, 1)
+  .step(0.01)
+  .onChange(setup)
+fabricGUI
+  .add(settings, 'connectedNeighbors', 0, 7)
+  .step(1)
+  .onChange(setup)
 fabricGUI.add(settings, 'neighborWeight', 0.8, 1).step(0.01)
 const bloomGUI = gui.addFolder('bloom')
 bloomGUI.add(settings, 'blurRadius', 0, 20).step(1)
 bloomGUI.add(settings, 'blurWeight', 0, 2).step(0.01)
 bloomGUI.add(settings, 'originalWeight', 0, 2).step(0.01)
 const gridGUI = gui.addFolder('grid')
-gridGUI.add(settings, 'gridLines', 10, 300).step(1).onChange(setup)
+gridGUI
+  .add(settings, 'gridLines', 10, 300)
+  .step(1)
+  .onChange(setup)
 gridGUI.add(settings, 'linesAnimationOffset', 0, 100).step(1)
 gridGUI.add(settings, 'gridMaxHeight', 0.01, 0.8).step(0.01)
 // gui.add(settings, 'motionBlur')
@@ -166,10 +217,7 @@ function setup () {
   for (let q = 0; q < frequenciesCount; q += settings.connectedBinsStride) {
     const mag = Math.pow(rand(), 1 - q / frequenciesCount) * 0.9
     const rads = rand() * Math.PI * 2
-    const position = [
-      Math.cos(rads) * mag,
-      Math.sin(rads) * mag
-    ]
+    const position = [Math.cos(rads) * mag, Math.sin(rads) * mag]
     const id = points.length
     const point = createPoint(id, position)
     point.frequencyBin = q
@@ -186,11 +234,15 @@ function setup () {
       position: position,
       id: id,
       neighbors: new Set(), // gonna fill this up with the results of delaunay
-      spring: createSpring(settings.dampening * settings.stiffness, settings.stiffness, 0)
+      spring: createSpring(
+        settings.dampening * settings.stiffness,
+        settings.stiffness,
+        0
+      )
     }
   }
 
-  delaunay = new Delaunator(points.map((pt) => pt.position))
+  delaunay = new Delaunator(points.map(pt => pt.position))
   for (let j = 0; j < delaunay.triangles.length; j += 3) {
     const pt1 = delaunay.triangles[j]
     const pt2 = delaunay.triangles[j + 1]
@@ -205,7 +257,10 @@ function setup () {
   }
 
   points.forEach(pt => {
-    pt.neighbors = shuffle(Array.from(pt.neighbors)).slice(0, settings.connectedNeighbors)
+    pt.neighbors = shuffle(Array.from(pt.neighbors)).slice(
+      0,
+      settings.connectedNeighbors
+    )
   })
 
   positions = new Float32Array(delaunay.triangles.length * 3)
@@ -249,7 +304,9 @@ function update () {
     const neighborSum = neighbors.reduce((total, ptID) => {
       return total + points[ptID].spring.tick(1, false)
     }, 0)
-    const neighborAverage = neighbors.length ? neighborSum / neighbors.length : 0
+    const neighborAverage = neighbors.length
+      ? neighborSum / neighbors.length
+      : 0
     value = Math.max(value, neighborAverage * settings.neighborWeight)
 
     pt.spring.updateValue(value)
@@ -269,13 +326,14 @@ function update () {
 
 const renderGlobals = regl({
   uniforms: {
-    projection: ({viewportWidth, viewportHeight}) => mat4.perspective(
-      [],
-      Math.PI / 4,
-      viewportWidth / viewportHeight,
-      0.01,
-      1000
-    ),
+    projection: ({ viewportWidth, viewportHeight }) =>
+      mat4.perspective(
+        [],
+        Math.PI / 4,
+        viewportWidth / viewportHeight,
+        0.01,
+        1000
+      ),
     view: () => camera.getMatrix(),
     time: ({ time }) => time
   }
@@ -313,11 +371,7 @@ const renderColoredQuad = regl({
     color: regl.prop('color')
   },
   attributes: {
-    position: [
-      -1, -1,
-      -1, 4,
-      4, -1
-    ]
+    position: [-1, -1, -1, 4, 4, -1]
   },
   count: 3,
   primitive: 'triangles'
@@ -343,7 +397,9 @@ function startLoop () {
     })
     renderToBlurredFBO(() => {
       if (settings.motionBlur) {
-        renderColoredQuad({ color: [0.18, 0.18, 0.18, settings.motionBlurAmount] })
+        renderColoredQuad({
+          color: [0.18, 0.18, 0.18, settings.motionBlurAmount]
+        })
       } else {
         regl.clear({
           color: [0.18, 0.18, 0.18, 1],
