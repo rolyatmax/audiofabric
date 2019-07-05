@@ -14,20 +14,28 @@ module.exports = function createAudioControls (audio, tracks) {
   tracks.map((track, i) => {
     const trackEl = trackSelector.appendChild(document.createElement('li'))
     trackEl.classList.add('track')
+    let togglePlay = true
     trackEl.addEventListener('click', () => {
-      setTrack(tracks[i])
-      audio.play()
+      if (togglePlay || !audio.src.endsWith(tracks[i].path)) {
+        setTrack(tracks[i])
+        audio.play()
+      } else {
+        audio.pause()
+      }
+      togglePlay = !togglePlay
     })
     trackEl.innerHTML = '<span>0' + (1 + i) + '.</span> ' + track.title
     track.el = trackEl
   })
 
   function setTrack (track) {
-    audio.src = track.path
-    tracks.forEach(t => t.el.classList.remove('selected'))
-    track.el.classList.add('selected')
-    titleEl.innerText = track.title
-    artistEl.innerText = track.artist
+    if (!audio.src.endsWith(track.path)) {
+      audio.src = track.path
+      tracks.forEach(t => t.el.classList.remove('selected'))
+      track.el.classList.add('selected')
+      titleEl.innerText = track.title
+      artistEl.innerText = track.artist
+    }
   }
 
   setTrack(tracks[0])
@@ -48,7 +56,7 @@ module.exports = function createAudioControls (audio, tracks) {
     audio.currentTime = t * audio.duration
   })
 
-  window.addEventListener('keypress', (e) => {
+  window.addEventListener('keypress', e => {
     if (e.key === ' ') {
       togglePlay()
     }
@@ -69,7 +77,7 @@ module.exports = function createAudioControls (audio, tracks) {
 }
 
 function formatSeconds (seconds) {
-  const minutes = seconds / 60 | 0
+  const minutes = (seconds / 60) | 0
   seconds = '' + (seconds % 60 | 0)
   if (seconds.length === 1) {
     seconds = `0${seconds}`
